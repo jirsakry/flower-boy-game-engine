@@ -1,7 +1,8 @@
-package cz.cvut.fel.pjv.jirsakry.model;
+package cz.cvut.fel.pjv.jirsakry.view;
 
 public enum ImageID {
-    CHARACTER("character.png");
+    CHARACTER("character.png"),
+    BACKGROUND("background.png"),;
 
     private final String fileName;
     private double width;
