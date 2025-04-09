@@ -4,7 +4,7 @@ import java.util.List;
 
 public class GameWorld {
     private List<Enemy>  enemies;
-    private double playerSpeed = 4;
+    private double playerSpeed = 5;
     private int maxHealth = 2;
 
     private Player player = new Player(20, 500, playerSpeed, 2);

@@ -11,33 +11,49 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-import java.io.FileNotFoundException;
-
 public class JumpingGame extends Application {
     private GameWorld  gameWorld;
     private Controller controller;
     private GameRenderer gameRenderer;
 
     @Override
-    public void start(Stage stage) throws FileNotFoundException {
+    public void start(Stage stage){
         gameWorld = new GameWorld();
-        Controller controller = new Controller(gameWorld);
+        controller = new Controller(gameWorld);
         gameRenderer = new GameRenderer(gameWorld);
         gameRenderer.loadImages();
         Canvas canvas = gameRenderer.createCanvas();
-        gameRenderer.drawBackground(canvas);
-
+        gameRenderer.loadAnimations();
 
         AnimationTimer timer = new AnimationTimer() {
-            private long lastTime = 0;
+            private long lastUpdate = 0;
+            private int frameCount = 0;
+            private long lastFrameTime = 0;
+            private double currentFps = 0;
+
             @Override
             public void handle(long now) {
-                gameRenderer.clearCanvas(canvas); //TODO: Very temporary, i hope
-                if (lastTime++ > 10){
-                    gameWorld.update();
-                    lastTime = 0;
+//                gameRenderer.clearCanvas(canvas); //TODO: Very temporary, i hope...
+                if(lastUpdate == 0){
+                    lastUpdate = now;
+                    return;
                 }
+
+                double deltaTime = (now - lastUpdate) * 0.000_000_000_1;
+                lastUpdate = now;
+
+                frameCount++;
+                if(now - lastFrameTime >= 1_000_000_000){ // every second
+                    currentFps = frameCount;
+                    frameCount = 0;
+                    lastFrameTime = now;
+                    System.out.println("DeltaTime: " + deltaTime);
+                }
+
                 gameRenderer.render(canvas);
+                if(deltaTime > 0.016){ // should corespond to 60 times per second
+                    gameWorld.update();
+                }
             }
         };
         timer.start();

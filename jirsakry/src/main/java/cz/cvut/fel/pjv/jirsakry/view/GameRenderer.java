@@ -5,6 +5,7 @@ import cz.cvut.fel.pjv.jirsakry.model.Player;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -20,10 +21,20 @@ public class GameRenderer {
     private double backgroundWidth;
     private double backgroundHeight;
 
+    private Image[] idleAnim;
+    private int animTick, animIndex, animSpeed = 35;
+
     public GameRenderer(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
         player= gameWorld.getPlayer();
         images = new EnumMap<>(ImageID.class);
+    }
+
+    public Canvas createCanvas(){
+        backgroundWidth = images.get(ImageID.BACKGROUND).getWidth();
+        backgroundHeight = images.get(ImageID.BACKGROUND).getHeight();
+        Canvas canvas = new Canvas(backgroundWidth, backgroundHeight);
+        return canvas;
     }
 
     public void drawBackground(Canvas canvas) {
@@ -33,15 +44,14 @@ public class GameRenderer {
 
     public void render(Canvas canvas){
         gc = canvas.getGraphicsContext2D();
-        gc.drawImage(images.get(ImageID.CHARACTER), player.getX(), player.getY());
-
+        gc.drawImage(images.get(ImageID.BACKGROUND), 0, 0);
+        updateAnimationTick();
+        gc.drawImage(idleAnim[animIndex], player.getX(), player.getY());
     }
 
-    public Canvas createCanvas(){
-        backgroundWidth = images.get(ImageID.BACKGROUND).getWidth();
-        backgroundHeight = images.get(ImageID.BACKGROUND).getHeight();
-        Canvas canvas = new Canvas(backgroundWidth, backgroundHeight);
-        return canvas;
+    public void clearCanvas(Canvas canvas) {
+        gc = canvas.getGraphicsContext2D();
+        gc.clearRect(0, 0, backgroundWidth, backgroundHeight);
     }
 
     public void loadImages() {
@@ -58,6 +68,18 @@ public class GameRenderer {
         }
     }
 
+    public void loadAnimations(){
+        Image spriteSheet = images.get(ImageID.CHARACTER_IDLE);
+        double frameWidth = spriteSheet.getWidth() / 6;
+        double frameHeight = spriteSheet.getHeight();
+        idleAnim = new Image[6];
+        for (int i = 0; i < idleAnim.length; i++){
+            idleAnim[i] = new WritableImage(spriteSheet.getPixelReader(),
+                    (int) (i * frameWidth), 0,
+                    (int) frameWidth, (int) frameHeight);
+        }
+    }
+
     public double getBackgroundWidth() {
         return backgroundWidth;
     }
@@ -66,8 +88,14 @@ public class GameRenderer {
         return backgroundHeight;
     }
 
-    public void clearCanvas(Canvas canvas) {
-        gc = canvas.getGraphicsContext2D();
-        gc.clearRect(0, 0, backgroundWidth, backgroundHeight);
+    private void updateAnimationTick(){
+        animTick++;
+        if(animTick >= animSpeed){
+            animTick = 0;
+            animIndex++;
+            if(animIndex >= idleAnim.length){
+                animIndex = 0;
+            }
+        }
     }
 }
