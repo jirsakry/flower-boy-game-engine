@@ -30,33 +30,38 @@ public class JumpingGame extends Application {
             private int frameCount = 0;
             private long lastFrameTime = 0;
             private double currentFps = 0;
-
+            private int counter = 0;
             @Override
             public void handle(long now) {
 //                gameRenderer.clearCanvas(canvas); //TODO: Very temporary, i hope...
-                if(lastUpdate == 0){
-                    lastUpdate = now;
-                    return;
-                }
-
-                double deltaTime = (now - lastUpdate) * 0.000_000_000_1;
-                lastUpdate = now;
-
-                frameCount++;
-                if(now - lastFrameTime >= 1_000_000_000){ // every second
-                    currentFps = frameCount;
-                    frameCount = 0;
-                    lastFrameTime = now;
-                    System.out.println("DeltaTime: " + deltaTime);
-                }
-
                 gameRenderer.render(canvas);
-                if(deltaTime > 0.016){ // should corespond to 60 times per second
+                if(counter++ > 10){
                     gameWorld.update();
+                    counter = 0;
                 }
+
+//                if(lastUpdate == 0){ // generated gameloop
+//                    lastUpdate = now;
+//                    return;
+//                }
+//
+//                double deltaTime = (now - lastUpdate) * 0.000_000_000_1;
+//                lastUpdate = now;
+//
+//                frameCount++;
+//                if(now - lastFrameTime >= 1_000_000_000){ // every second
+//                    currentFps = frameCount;
+//                    frameCount = 0;
+//                    lastFrameTime = now;
+//                    System.out.println("DeltaTime: " + deltaTime);
+//                }
+//
+//                gameRenderer.render(canvas);
+//                if(deltaTime > 0.016){ // should corespond to 60 times per second
+//                    gameWorld.update();
+//                }
             }
-        };
-        timer.start();
+        };timer.start();
 
         StackPane root = new StackPane(canvas);
         Scene scene = new Scene(root, gameRenderer.getBackgroundWidth(), gameRenderer.getBackgroundHeight());

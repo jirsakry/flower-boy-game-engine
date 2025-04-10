@@ -15,6 +15,9 @@ public class Player extends GameObject {
 
     }
 
-    public void goRight(){x += speed;}
-    public void goLeft(){x -= speed;}
+    public void moveRight(){x += speed;}
+    public void moveLeft(){x -= speed;}
+    public void jump(){
+        //TODO
+    }
 }

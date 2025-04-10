@@ -22,7 +22,7 @@ public class GameRenderer {
     private double backgroundHeight;
 
     private Image[] idleAnim;
-    private int animTick, animIndex, animSpeed = 35;
+    private int animTick, animIndex, animSpeed = 5;
 
     public GameRenderer(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
@@ -68,7 +68,7 @@ public class GameRenderer {
         }
     }
 
-    public void loadAnimations(){
+    public void loadAnimations(){ // TODO: animations will in separate class eventually
         Image spriteSheet = images.get(ImageID.CHARACTER_IDLE);
         double frameWidth = spriteSheet.getWidth() / 6;
         double frameHeight = spriteSheet.getHeight();
@@ -78,14 +78,6 @@ public class GameRenderer {
                     (int) (i * frameWidth), 0,
                     (int) frameWidth, (int) frameHeight);
         }
-    }
-
-    public double getBackgroundWidth() {
-        return backgroundWidth;
-    }
-
-    public double getBackgroundHeight() {
-        return backgroundHeight;
     }
 
     private void updateAnimationTick(){
@@ -98,4 +90,13 @@ public class GameRenderer {
             }
         }
     }
+
+    public double getBackgroundWidth() {
+        return backgroundWidth;
+    }
+
+    public double getBackgroundHeight() {
+        return backgroundHeight;
+    }
+
 }

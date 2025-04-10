@@ -21,10 +21,10 @@ public class GameWorld {
     }
 
     public void goRight() {
-        player.goRight();
+        player.moveRight();
     }
     public void goLeft() {
-        player.goLeft();
+        player.moveLeft();
     }
 
     public Player getPlayer() {
