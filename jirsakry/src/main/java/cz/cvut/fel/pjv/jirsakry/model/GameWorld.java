@@ -4,20 +4,22 @@ import java.util.List;
 
 public class GameWorld {
     private List<Enemy>  enemies;
-    private double playerSpeed = 5;
-    private int maxHealth = 2;
+    private double playerAcceleration = 3;
+    private double playerMaxSpeed = 6;
+    private int playerMaxHealth = 2;
+    private int playerCurrentHealth = 1;
 
-    private Player player = new Player(20, 500, playerSpeed, 2);
+    private Player player = new Player(20, 500,
+            playerAcceleration, playerMaxSpeed, playerMaxHealth, playerCurrentHealth);
 
+    private void checkCollisions(){
+        // TODO
+    }
 
     public void update(){
         player.update();
 //        enemies.forEach(Enemy::update);
 //        checkCollisions();
-    }
-
-    private void checkCollisions(){
-        // TODO
     }
 
     public void goRight() {
@@ -26,8 +28,14 @@ public class GameWorld {
     public void goLeft() {
         player.moveLeft();
     }
+    public void jump() {
+        player.jump();
+    }
 
     public Player getPlayer() {
         return player;
+    }
+    public void setPlayerSpeed(double speed) {
+        player.setSpeed(speed);
     }
 }

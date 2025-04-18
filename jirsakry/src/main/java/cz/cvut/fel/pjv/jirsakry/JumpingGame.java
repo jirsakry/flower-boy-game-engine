@@ -5,16 +5,19 @@ import cz.cvut.fel.pjv.jirsakry.model.GameWorld;
 import cz.cvut.fel.pjv.jirsakry.view.GameRenderer;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.EventType;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+
 public class JumpingGame extends Application {
     private GameWorld  gameWorld;
     private Controller controller;
     private GameRenderer gameRenderer;
+    private EventType <KeyEvent> keyEventType;
 
     @Override
     public void start(Stage stage){
@@ -26,10 +29,10 @@ public class JumpingGame extends Application {
         gameRenderer.loadAnimations();
 
         AnimationTimer timer = new AnimationTimer() {
-            private long lastUpdate = 0;
-            private int frameCount = 0;
-            private long lastFrameTime = 0;
-            private double currentFps = 0;
+//            private long lastUpdate = 0;
+//            private int frameCount = 0;
+//            private long lastFrameTime = 0;
+//            private double currentFps = 0;
             private int counter = 0;
             @Override
             public void handle(long now) {
@@ -37,6 +40,7 @@ public class JumpingGame extends Application {
                 gameRenderer.render(canvas);
                 if(counter++ > 10){
                     gameWorld.update();
+                    controller.update();
                     counter = 0;
                 }
 
@@ -66,9 +70,9 @@ public class JumpingGame extends Application {
         StackPane root = new StackPane(canvas);
         Scene scene = new Scene(root, gameRenderer.getBackgroundWidth(), gameRenderer.getBackgroundHeight());
 
-        scene.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
-            controller.handleInput(keyEvent);
-        });
+        scene.addEventHandler(KeyEvent.KEY_PRESSED, event -> {controller.handleKeyPressed(event);});
+        scene.addEventHandler(KeyEvent.KEY_RELEASED, event -> {controller.handleKeyReleased(event);});
+
 
         stage.setTitle("Jumping Game");
         stage.setResizable(false);

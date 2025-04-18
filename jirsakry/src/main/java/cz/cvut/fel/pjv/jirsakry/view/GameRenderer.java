@@ -22,7 +22,7 @@ public class GameRenderer {
     private double backgroundHeight;
 
     private Image[] idleAnim;
-    private int animTick, animIndex, animSpeed = 5;
+    private int animTick, animIndex, animSpeed = 15;
 
     public GameRenderer(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
@@ -68,9 +68,9 @@ public class GameRenderer {
         }
     }
 
-    public void loadAnimations(){ // TODO: animations will in separate class eventually
+    public void loadAnimations(){ // semi-generated TODO: animations will in separate class eventually
         Image spriteSheet = images.get(ImageID.CHARACTER_IDLE);
-        double frameWidth = spriteSheet.getWidth() / 6;
+        double frameWidth = spriteSheet.getWidth() / 6; // 6 pictures in the sheet
         double frameHeight = spriteSheet.getHeight();
         idleAnim = new Image[6];
         for (int i = 0; i < idleAnim.length; i++){
@@ -80,7 +80,7 @@ public class GameRenderer {
         }
     }
 
-    private void updateAnimationTick(){
+    private void updateAnimationTick(){ // based on a tutorial
         animTick++;
         if(animTick >= animSpeed){
             animTick = 0;
