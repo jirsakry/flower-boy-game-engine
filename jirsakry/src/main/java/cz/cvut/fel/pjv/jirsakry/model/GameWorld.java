@@ -4,8 +4,8 @@ import java.util.List;
 
 public class GameWorld {
     private List<Enemy>  enemies;
-    private double playerAcceleration = 3;
-    private double playerMaxSpeed = 6;
+    private double playerAcceleration = 2.5;
+    private double playerMaxSpeed = 5;
     private int playerMaxHealth = 2;
     private int playerCurrentHealth = 1;
 

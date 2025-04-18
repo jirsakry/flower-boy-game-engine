@@ -13,6 +13,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 public class GameRenderer {
+    private final AnimManager animManager;
     private final GameWorld gameWorld;
     private GraphicsContext gc;
     private final Map<ImageID, Image> images; // = new EnumMap<>(ImageID.class);
@@ -21,13 +22,12 @@ public class GameRenderer {
     private double backgroundWidth;
     private double backgroundHeight;
 
-    private Image[] idleAnim;
-    private int animTick, animIndex, animSpeed = 15;
 
     public GameRenderer(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
-        player= gameWorld.getPlayer();
+        player = gameWorld.getPlayer();
         images = new EnumMap<>(ImageID.class);
+        animManager = new AnimManager(images);
     }
 
     public Canvas createCanvas(){
@@ -45,8 +45,11 @@ public class GameRenderer {
     public void render(Canvas canvas){
         gc = canvas.getGraphicsContext2D();
         gc.drawImage(images.get(ImageID.BACKGROUND), 0, 0);
-        updateAnimationTick();
-        gc.drawImage(idleAnim[animIndex], player.getX(), player.getY());
+        animManager.updateAnimationTick();
+        gc.drawImage(
+                animManager.getIdleAnim()[animManager.getAnimFrame()],
+                player.getX(), player.getY()
+        );
     }
 
     public void clearCanvas(Canvas canvas) {
@@ -68,27 +71,8 @@ public class GameRenderer {
         }
     }
 
-    public void loadAnimations(){ // semi-generated TODO: animations will in separate class eventually
-        Image spriteSheet = images.get(ImageID.CHARACTER_IDLE);
-        double frameWidth = spriteSheet.getWidth() / 6; // 6 pictures in the sheet
-        double frameHeight = spriteSheet.getHeight();
-        idleAnim = new Image[6];
-        for (int i = 0; i < idleAnim.length; i++){
-            idleAnim[i] = new WritableImage(spriteSheet.getPixelReader(),
-                    (int) (i * frameWidth), 0,
-                    (int) frameWidth, (int) frameHeight);
-        }
-    }
-
-    private void updateAnimationTick(){ // based on a tutorial
-        animTick++;
-        if(animTick >= animSpeed){
-            animTick = 0;
-            animIndex++;
-            if(animIndex >= idleAnim.length){
-                animIndex = 0;
-            }
-        }
+    public void loadAnimations() {
+        animManager.loadAnimations();
     }
 
     public double getBackgroundWidth() {
