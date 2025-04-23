@@ -17,7 +17,6 @@ public class JumpingGame extends Application {
     private GameWorld  gameWorld;
     private Controller controller;
     private GameRenderer gameRenderer;
-    private EventType <KeyEvent> keyEventType;
 
     @Override
     public void start(Stage stage){
@@ -35,16 +34,13 @@ public class JumpingGame extends Application {
 //            private double currentFps = 0;
             private int counter = 0;
             @Override
-            public void handle(long now) {
-//                gameRenderer.clearCanvas(canvas); //TODO: Very temporary, i hope...
+            public void handle(long now) { // TODO: Very temporary, i hope...
+                gameWorld.update();
+                controller.update();
+                counter = 0;
                 gameRenderer.render(canvas);
-                if(counter++ > 10){
-                    gameWorld.update();
-                    controller.update();
-                    counter = 0;
-                }
 
-//                if(lastUpdate == 0){ // generated gameloop
+//                if(lastUpdate == 0){ // generated game loop
 //                    lastUpdate = now;
 //                    return;
 //                }

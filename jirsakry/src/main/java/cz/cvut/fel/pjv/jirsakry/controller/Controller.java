@@ -23,15 +23,28 @@ public class Controller {
         else if(event.getCode() == KeyCode.RIGHT){
             activeKeys.add(KeyCode.RIGHT);
         }
+        else if(event.getCode() == KeyCode.DOWN){
+            activeKeys.add(KeyCode.DOWN);
+        }
+        else if(event.getCode() == KeyCode.UP){
+            activeKeys.add(KeyCode.UP);
+        }
+        else if(event.getCode() == KeyCode.SPACE){
+            activeKeys.add(KeyCode.SPACE);
+        }
     }
     public void handleKeyReleased(KeyEvent event) {
         if(event.getCode() == KeyCode.LEFT){
             activeKeys.remove(KeyCode.LEFT);
-            gameWorld.setPlayerSpeed(0);
         }
         else if(event.getCode() == KeyCode.RIGHT){
             activeKeys.remove(KeyCode.RIGHT);
-            gameWorld.setPlayerSpeed(0);
+        }
+        else if(event.getCode() == KeyCode.DOWN){
+            activeKeys.remove(KeyCode.DOWN);
+        }
+        else if(event.getCode() == KeyCode.UP){
+            activeKeys.remove(KeyCode.UP);
         }
         else if(event.getCode() == KeyCode.SPACE){
             activeKeys.remove(KeyCode.SPACE);
@@ -39,13 +52,20 @@ public class Controller {
     }
 
     public void update() {
+//        System.out.println(activeKeys);
         if (activeKeys.contains(KeyCode.LEFT)) {
-            gameWorld.goLeft();
+            gameWorld.moveLeft();
         }
-        else if (activeKeys.contains(KeyCode.RIGHT)) {
-            gameWorld.goRight();
+        if (activeKeys.contains(KeyCode.RIGHT)) {
+            gameWorld.moveRight();
         }
-        else if (activeKeys.contains(KeyCode.SPACE)) {
+        if (activeKeys.contains(KeyCode.DOWN)) {
+            gameWorld.moveDown();
+        }
+        if (activeKeys.contains(KeyCode.UP)){
+            gameWorld.moveUp();
+        }
+        if (activeKeys.contains(KeyCode.SPACE)) {
             gameWorld.jump();
         }
     }

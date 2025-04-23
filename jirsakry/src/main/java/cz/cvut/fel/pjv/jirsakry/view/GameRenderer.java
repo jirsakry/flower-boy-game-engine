@@ -2,10 +2,15 @@ package cz.cvut.fel.pjv.jirsakry.view;
 
 import cz.cvut.fel.pjv.jirsakry.model.GameWorld;
 import cz.cvut.fel.pjv.jirsakry.model.Player;
+import javafx.geometry.BoundingBox;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -50,6 +55,14 @@ public class GameRenderer {
                 animManager.getIdleAnim()[animManager.getAnimFrame()],
                 player.getX(), player.getY()
         );
+//        gc.drawImage(images.get(ImageID.CHARACTER), player.getX(), player.getY());
+        renderHitBox(gc);
+    }
+
+    private void renderHitBox(GraphicsContext gc){
+        Rectangle playerHitBox = player.getBoundingBox();
+        gc.setStroke(Color.RED);
+        gc.strokeRect(playerHitBox.getX(), playerHitBox.getY(), playerHitBox.getWidth(), playerHitBox.getHeight());
     }
 
     public void clearCanvas(Canvas canvas) {
