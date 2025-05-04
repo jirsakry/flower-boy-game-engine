@@ -1,15 +1,13 @@
 package cz.cvut.fel.pjv.jirsakry.view;
 
+import cz.cvut.fel.pjv.jirsakry.model.DebugOverlay;
 import cz.cvut.fel.pjv.jirsakry.model.GameWorld;
-import cz.cvut.fel.pjv.jirsakry.model.Player;
+import cz.cvut.fel.pjv.jirsakry.model.Platform;
 import javafx.geometry.BoundingBox;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 import java.io.FileInputStream;
@@ -21,16 +19,13 @@ public class GameRenderer {
     private final AnimManager animManager;
     private final GameWorld gameWorld;
     private GraphicsContext gc;
-    private final Map<ImageID, Image> images; // = new EnumMap<>(ImageID.class);
-    private final Player player;
-
+    private final Map<ImageID, Image> images;
     private double backgroundWidth;
     private double backgroundHeight;
 
 
     public GameRenderer(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
-        player = gameWorld.getPlayer();
         images = new EnumMap<>(ImageID.class);
         animManager = new AnimManager(images);
     }
@@ -49,20 +44,31 @@ public class GameRenderer {
 
     public void render(Canvas canvas){
         gc = canvas.getGraphicsContext2D();
-        gc.drawImage(images.get(ImageID.BACKGROUND), 0, 0);
+//        gc.drawImage(images.get(ImageID.BACKGROUND), 0, 0);
+        clearCanvas(canvas);
         animManager.updateAnimationTick();
         gc.drawImage(
                 animManager.getIdleAnim()[animManager.getAnimFrame()],
-                player.getX(), player.getY()
+                gameWorld.getPlayer().getX(), gameWorld.getPlayer().getY()
         );
-//        gc.drawImage(images.get(ImageID.CHARACTER), player.getX(), player.getY());
+        renderLevel(gc);
         renderHitBox(gc);
+
+        DebugOverlay.draw(gc, gameWorld.getPlayer(), gameWorld.getLevel0().getLevelData());
+    }
+
+    private void renderLevel(GraphicsContext gc){
+        for (Platform platform : gameWorld.getLevel0().getPlatforms()){
+            gc.setStroke(Color.BLACK);
+            gc.strokeRect(platform.getX(), platform.getY(), platform.getWidth(), platform.getHeight());
+        }
     }
 
     private void renderHitBox(GraphicsContext gc){
-        Rectangle playerHitBox = player.getBoundingBox();
+        BoundingBox playerHitBox = gameWorld.getPlayer().getHitBox();
+
         gc.setStroke(Color.RED);
-        gc.strokeRect(playerHitBox.getX(), playerHitBox.getY(), playerHitBox.getWidth(), playerHitBox.getHeight());
+        gc.strokeRect(playerHitBox.getMinX(), playerHitBox.getMinY(), playerHitBox.getWidth(), playerHitBox.getHeight());
     }
 
     public void clearCanvas(Canvas canvas) {

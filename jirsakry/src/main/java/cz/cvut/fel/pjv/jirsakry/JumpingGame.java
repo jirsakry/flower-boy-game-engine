@@ -14,12 +14,13 @@ import javafx.stage.Stage;
 
 
 public class JumpingGame extends Application {
-    private GameWorld  gameWorld;
+    private GameWorld gameWorld;
     private Controller controller;
     private GameRenderer gameRenderer;
 
     @Override
     public void start(Stage stage){
+
         gameWorld = new GameWorld();
         controller = new Controller(gameWorld);
         gameRenderer = new GameRenderer(gameWorld);
@@ -27,6 +28,7 @@ public class JumpingGame extends Application {
         Canvas canvas = gameRenderer.createCanvas();
         gameRenderer.loadAnimations();
 
+        gameWorld.init();
         AnimationTimer timer = new AnimationTimer() {
 //            private long lastUpdate = 0;
 //            private int frameCount = 0;
@@ -37,7 +39,6 @@ public class JumpingGame extends Application {
             public void handle(long now) { // TODO: Very temporary, i hope...
                 gameWorld.update();
                 controller.update();
-                counter = 0;
                 gameRenderer.render(canvas);
 
 //                if(lastUpdate == 0){ // generated game loop

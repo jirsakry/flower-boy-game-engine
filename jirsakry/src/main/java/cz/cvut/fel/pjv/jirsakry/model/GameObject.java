@@ -55,7 +55,6 @@ abstract class GameObject {
     }
 
     public void update(){
-
     }
 
 }

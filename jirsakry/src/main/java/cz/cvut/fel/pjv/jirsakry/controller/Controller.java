@@ -1,5 +1,6 @@
 package cz.cvut.fel.pjv.jirsakry.controller;
 
+import cz.cvut.fel.pjv.jirsakry.model.DebugOverlay;
 import cz.cvut.fel.pjv.jirsakry.model.GameWorld;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -20,33 +21,36 @@ public class Controller {
         if(event.getCode() == KeyCode.LEFT){
             activeKeys.add(KeyCode.LEFT);
         }
-        else if(event.getCode() == KeyCode.RIGHT){
+        if(event.getCode() == KeyCode.RIGHT){
             activeKeys.add(KeyCode.RIGHT);
         }
-        else if(event.getCode() == KeyCode.DOWN){
+        if(event.getCode() == KeyCode.DOWN){
             activeKeys.add(KeyCode.DOWN);
         }
-        else if(event.getCode() == KeyCode.UP){
+        if(event.getCode() == KeyCode.UP){
             activeKeys.add(KeyCode.UP);
         }
-        else if(event.getCode() == KeyCode.SPACE){
+        if(event.getCode() == KeyCode.SPACE){
             activeKeys.add(KeyCode.SPACE);
+        }
+        if(event.getCode() == KeyCode.F3){
+            DebugOverlay.toggleDebug();
         }
     }
     public void handleKeyReleased(KeyEvent event) {
         if(event.getCode() == KeyCode.LEFT){
             activeKeys.remove(KeyCode.LEFT);
         }
-        else if(event.getCode() == KeyCode.RIGHT){
+        if(event.getCode() == KeyCode.RIGHT){
             activeKeys.remove(KeyCode.RIGHT);
         }
-        else if(event.getCode() == KeyCode.DOWN){
+        if(event.getCode() == KeyCode.DOWN){
             activeKeys.remove(KeyCode.DOWN);
         }
-        else if(event.getCode() == KeyCode.UP){
+        if(event.getCode() == KeyCode.UP){
             activeKeys.remove(KeyCode.UP);
         }
-        else if(event.getCode() == KeyCode.SPACE){
+        if(event.getCode() == KeyCode.SPACE){
             activeKeys.remove(KeyCode.SPACE);
         }
     }

@@ -64,7 +64,7 @@ public class AnimManager {
         }
     }
 
-    private void loadRunAnim(){ // semi-generated TODO: animations will in separate class eventually
+    private void loadRunAnim(){ // semi-generated
         Image spriteSheet = images.get(ImageID.CHARACTER_RUN);
         double frameWidth = spriteSheet.getWidth() / runLength;
         double frameHeight = spriteSheet.getHeight();
