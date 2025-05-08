@@ -1,41 +1,25 @@
 package cz.cvut.fel.pjv.jirsakry.model;
 
 import javafx.geometry.BoundingBox;
-import javafx.scene.shape.Rectangle;
 
-import static cz.cvut.fel.pjv.jirsakry.model.HelpMethods.canMoveHere;
+import static cz.cvut.fel.pjv.jirsakry.model.HelpMethods.*;
 
 public class Player extends GameObject {
     private PlayerState playerState;
     private final double speed;
     private int maxHealth;
     private int currentHealth;
-    private boolean canMove;
-
+    private boolean moving = false;
 
     //jump and gravity
-    private boolean onGround = false;
-    private boolean isJumping = false;
+    private boolean inAir = false;
     private double jumpStrength;
     private double gravity;
     private double velocityX = 0;
     private double velocityY = 0;
     private double maxJumpHeight = 30;
+    private double maxFallSpeed = 1.5;
 
-    private final int[][] levelData = {
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0},
-            {0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0},
-            {0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
-    };
 
     public Player(double x, double y, double width, double height, double speed, int maxHealth, int  currentHealth,
                   double jumpStrength,  double gravity) {
@@ -49,28 +33,52 @@ public class Player extends GameObject {
 
     @Override
     public void update(){
-//        if(!onGround && canMoveHere(x + velocityX, y + velocityY, this, levelData)){
-//            applyGravity();
-//        }
-        if(velocityY > 0.8){ // max fall speed cap
-            velocityY = 0.8;
+        moving = velocityX != 0; // is moving?
+
+        if(!inAir){
+            if(!(IsEntityOnFloor(getHitBox(), GameWorld.levelData))){
+                inAir = true;
+            }
         }
 
-        if(canMoveHere(getHitBox().getMinX() + velocityX, getHitBox().getMinY() + velocityY, this, levelData)){
-            x += velocityX;
-            y += velocityY;
+        if(inAir){
+            if(CanMoveHere(getHitBox().getMinX(), getHitBox().getMinY() + velocityY, this, GameWorld.levelData)){
+                y += velocityY;
+                velocityY += gravity;
+                updateHorizontalMove();
+            }
+            else{
+                hitBox = new BoundingBox (x, GetYPosAboveUnder(getHitBox(), velocityY), width, height);
+                if (velocityY > 0){
+                    resetInAir();
+                }
+                else{
+                    velocityY = 0;
+                }
+                updateHorizontalMove();
+            }
+        }
+        else{
+            updateHorizontalMove();
         }
         velocityX = 0;
-        velocityY = 0;
-//        System.out.println("canMove: " + canMove);
-//        System.out.println("isJumping:" + isJumping + " onGround:" +  onGround);
     }
 
-    private void applyGravity(){
-        if(!onGround){
-            velocityY += gravity;
+    private void resetInAir(){
+        inAir = false;
+        velocityY = 0;
+    }
+
+    private void updateHorizontalMove() {
+        if(CanMoveHere(getHitBox().getMinX() + velocityX, getHitBox().getMinY(), this, GameWorld.levelData)){
+            x += velocityX;
+
         }
-        y += velocityY;
+        else {
+            hitBox = new BoundingBox (GetXPosNextToWall(hitBox, velocityX), y, width, height);
+            moving = false;
+//            x = GetXPosNextToWall(hitBox, velocityX);
+        }
     }
 
     public void moveRight(){
@@ -82,39 +90,28 @@ public class Player extends GameObject {
     public void moveDown(){
         velocityY = speed;
     }
+
     public void moveUp(){
         velocityY = -speed;
     }
 
     public void jump(){
         //TODO: non-static jump height
-        if(onGround){
-            velocityY = -jumpStrength;
-            isJumping = true;
-            onGround = false;
+        if(!inAir){
+            inAir = true;
+            velocityY += jumpStrength;
         }
     }
 
     @Override
     public BoundingBox getHitBox(){
-        return new BoundingBox(x + 20, y + 10, width - 45, height - 13);
-//        return new BoundingBox(x, y, width, height);
+        hitBox =  new BoundingBox(x + 22, y + 11, width - 48, height - 14);
+//        hitBox = new BoundingBox(x, y, width, height);
+        return hitBox;
     }
 
-    public boolean getCanMove() {
-        return canMove;
-    }
-
-    public void setCanMove(boolean canMove) {
-        this.canMove = canMove;
-    }
-
-    public void setOnGround(boolean onGround) {
-        this.onGround = onGround;
-    }
-
-    public void setIsJumping(boolean isJumping) {
-        this.isJumping = isJumping;
+    public void setInAir(boolean inAir) {
+        this.inAir = inAir;
     }
 
     public double getVelocityX() {
@@ -123,5 +120,13 @@ public class Player extends GameObject {
 
     public double getVelocityY() {
         return velocityY;
+    }
+
+    public boolean isInAir() {
+        return inAir;
+    }
+
+    public boolean isMoving() {
+        return moving;
     }
 }

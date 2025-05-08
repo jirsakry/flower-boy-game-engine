@@ -10,6 +10,8 @@ abstract class GameObject {
 
     protected double width;
     protected double height;
+    
+    protected BoundingBox hitBox;
 
     public GameObject(double x, double y, double width, double height) {
         this.x = x;
@@ -19,7 +21,8 @@ abstract class GameObject {
     }
 
     public BoundingBox getHitBox() {
-        return new BoundingBox(x, y, width, height);
+        hitBox = new BoundingBox(x, y, width, height);
+        return hitBox;
     }
 
     public double getX() {

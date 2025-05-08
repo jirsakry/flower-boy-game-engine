@@ -18,6 +18,15 @@ public class JumpingGame extends Application {
     private Controller controller;
     private GameRenderer gameRenderer;
 
+
+    // game loop
+    private static final long SECOND = 1_000_000_000L;
+    private int fps = 0;
+    private int ups = 0;
+    private int fpsCount = 0;
+    private int upsCount = 0;
+    private long lastCheck = 0;
+
     @Override
     public void start(Stage stage){
 
@@ -29,39 +38,34 @@ public class JumpingGame extends Application {
         gameRenderer.loadAnimations();
 
         gameWorld.init();
+        lastCheck = System.nanoTime();
         AnimationTimer timer = new AnimationTimer() {
-//            private long lastUpdate = 0;
-//            private int frameCount = 0;
-//            private long lastFrameTime = 0;
-//            private double currentFps = 0;
-            private int counter = 0;
+            private long lastUpdate = 0;
+
             @Override
             public void handle(long now) { // TODO: Very temporary, i hope...
-                gameWorld.update();
-                controller.update();
-                gameRenderer.render(canvas);
+                if (now - lastCheck >= SECOND) {
+                    fps = fpsCount;
+                    ups = upsCount;
+                    fpsCount = 0;
+                    upsCount = 0;
+                    lastCheck = now;
+                    System.out.println("FPS: " + fps + " | UPS: " + ups);
+                }
 
-//                if(lastUpdate == 0){ // generated game loop
-//                    lastUpdate = now;
-//                    return;
-//                }
-//
-//                double deltaTime = (now - lastUpdate) * 0.000_000_000_1;
-//                lastUpdate = now;
-//
-//                frameCount++;
-//                if(now - lastFrameTime >= 1_000_000_000){ // every second
-//                    currentFps = frameCount;
-//                    frameCount = 0;
-//                    lastFrameTime = now;
-//                    System.out.println("DeltaTime: " + deltaTime);
-//                }
-//
-//                gameRenderer.render(canvas);
-//                if(deltaTime > 0.016){ // should corespond to 60 times per second
-//                    gameWorld.update();
-//                }
+                // Update logiky hry (fixní časový krok)
+                if (now - lastUpdate >= SECOND / 120) { // 120 UPS
+                    gameWorld.update();
+                    controller.update();
+                    upsCount++;
+                    lastUpdate = now;
+                }
+
+                // Vykreslení (co nejčastěji)
+                gameRenderer.render(canvas);
+                fpsCount++;
             }
+
         };timer.start();
 
         StackPane root = new StackPane(canvas);

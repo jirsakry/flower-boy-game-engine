@@ -25,18 +25,6 @@ public class AnimManager {
         this.images = images;
     }
 
-    public Image[] getIdleAnim() {
-        return idleAnim;
-    }
-
-    public Image[] getRunAnim() {
-        return runAnim;
-    }
-
-    public int getAnimFrame() {
-        return animFrame;
-    }
-
     public void updateAnimationTick(){ // based on a tutorial
         animTick++;
         if(animTick >= animSpeed){
@@ -75,4 +63,15 @@ public class AnimManager {
         }
     }
 
+    public Image[] getIdleAnim() {
+        return idleAnim;
+    }
+
+    public Image[] getRunAnim() {
+        return runAnim;
+    }
+
+    public int getAnimFrame() {
+        return animFrame;
+    }
 }

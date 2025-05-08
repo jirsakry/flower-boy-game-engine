@@ -47,20 +47,29 @@ public class GameRenderer {
 //        gc.drawImage(images.get(ImageID.BACKGROUND), 0, 0);
         clearCanvas(canvas);
         animManager.updateAnimationTick();
-        gc.drawImage(
-                animManager.getIdleAnim()[animManager.getAnimFrame()],
-                gameWorld.getPlayer().getX(), gameWorld.getPlayer().getY()
-        );
+        if(gameWorld.getPlayer().isMoving()) {
+            gc.drawImage(
+                    animManager.getIdleAnim()[animManager.getAnimFrame()],
+                    gameWorld.getPlayer().getX(), gameWorld.getPlayer().getY()
+            );
+        } else {
+            gc.drawImage(
+                    animManager.getRunAnim()[animManager.getAnimFrame()],
+                    gameWorld.getPlayer().getX(), gameWorld.getPlayer().getY()
+            );
+        }
+
         renderLevel(gc);
         renderHitBox(gc);
 
-        DebugOverlay.draw(gc, gameWorld.getPlayer(), gameWorld.getLevel0().getLevelData());
+        DebugOverlay.draw(gc, gameWorld, gameWorld.getLevel0().getLevelData());
     }
+
 
     private void renderLevel(GraphicsContext gc){
         for (Platform platform : gameWorld.getLevel0().getPlatforms()){
             gc.setStroke(Color.BLACK);
-            gc.strokeRect(platform.getX(), platform.getY(), platform.getWidth(), platform.getHeight());
+            gc.fillRect(platform.getX(), platform.getY(), platform.getWidth(), platform.getHeight());
         }
     }
 

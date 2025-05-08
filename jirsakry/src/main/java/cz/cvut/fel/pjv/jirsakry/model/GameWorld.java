@@ -16,18 +16,19 @@ public class GameWorld{
 
     private Level level0;
 
-    private double playerSpeed = 1;
+    private double playerSpeed = 2;
     private int playerMaxHealth = 2;
     private int playerCurrentHealth = 1;
+    private boolean playerCollision = false;
 
     //jump and gravity
-    private double playerJumpStrength = 8;
-    private double gravity = 0.2;
+    private double playerJumpStrength = -15;
+    private double gravity = 0.6;
 
     private GameObject background;
     private Player player;
 
-    private final int[][] levelData = {
+    public static int[][] levelData = {
             {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -76,6 +77,12 @@ public class GameWorld{
     public void update(){
         player.update();
         checkCollisions();
+        playerCollision = false;
+        for (Platform platform : platforms) {
+            if(player.getHitBox().intersects(platform.getHitBox())){
+                playerCollision = true;
+            }
+        }
     }
 
     private void checkCollisions(){
@@ -88,10 +95,6 @@ public class GameWorld{
             stageCollision = true;
         }
 //        System.out.println("stageCollision: " + stageCollision);
-        if(player.getHitBox().getMaxY() + gravity >= background.getHeight()){
-            player.setOnGround(true);
-            player.setIsJumping(false);
-        }
     }
 
     public void moveRight() {
@@ -117,5 +120,9 @@ public class GameWorld{
 
     public Level getLevel0() {
         return level0;
+    }
+
+    public boolean isPlayerCollision() {
+        return playerCollision;
     }
 }
