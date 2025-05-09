@@ -4,4 +4,5 @@ module cz.cvut.fel.pjv.jirsakry {
     requires java.logging;
 
     exports cz.cvut.fel.pjv.jirsakry;
+    exports cz.cvut.fel.pjv.jirsakry.model;
 }

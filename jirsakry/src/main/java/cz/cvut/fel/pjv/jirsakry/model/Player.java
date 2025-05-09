@@ -5,7 +5,7 @@ import javafx.geometry.BoundingBox;
 import static cz.cvut.fel.pjv.jirsakry.model.HelpMethods.*;
 
 public class Player extends GameObject {
-    private PlayerState playerState;
+    private PlayerState playerState = PlayerState.FACING_RIGHT;
     private final double speed;
     private int maxHealth;
     private int currentHealth;

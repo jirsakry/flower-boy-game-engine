@@ -1,9 +1,6 @@
 package cz.cvut.fel.pjv.jirsakry.view;
 
-import cz.cvut.fel.pjv.jirsakry.model.DebugOverlay;
-import cz.cvut.fel.pjv.jirsakry.model.GameWorld;
-import cz.cvut.fel.pjv.jirsakry.model.Platform;
-import cz.cvut.fel.pjv.jirsakry.model.PlayerState;
+import cz.cvut.fel.pjv.jirsakry.model.*;
 import javafx.geometry.BoundingBox;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -25,8 +22,6 @@ public class GameRenderer {
     private double backgroundWidth;
     private double backgroundHeight;
 
-    private int invertedImageOffset = 0;
-
 
     public GameRenderer(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
@@ -37,8 +32,7 @@ public class GameRenderer {
     public Canvas createCanvas(){
         backgroundWidth = images.get(ImageID.BACKGROUND).getWidth();
         backgroundHeight = images.get(ImageID.BACKGROUND).getHeight();
-        Canvas canvas = new Canvas(backgroundWidth, backgroundHeight);
-        return canvas;
+        return new Canvas(backgroundWidth, backgroundHeight);
     }
 
     public void drawBackground(Canvas canvas) {
@@ -50,8 +44,23 @@ public class GameRenderer {
         gc = canvas.getGraphicsContext2D();
         clearCanvas(canvas);
 
+        for(Flower flower : gameWorld.getFlowers()){
+            if(!(flower.isCollected())) {
+                gc.drawImage(images.get(ImageID.FLOWER), flower.getX(), flower.getY());
+            }
+        }
+
+        renderCharacter();
+        renderLevel();
+
+        DebugOverlay.draw(gc, gameWorld, gameWorld.getLevel0().getLevelData());
+    }
+
+    private void renderCharacter() {
         boolean facingRight = gameWorld.getPlayer().getPlayerState() == PlayerState.FACING_RIGHT ? true : false;
-        if (facingRight) {
+
+        int invertedImageOffset;
+        if (facingRight) { // centering the inverted animations
             invertedImageOffset = 0;
         }else{
             invertedImageOffset = 4;
@@ -97,9 +106,6 @@ public class GameRenderer {
                 }
             }
         }
-
-        renderLevel();
-        DebugOverlay.draw(gc, gameWorld, gameWorld.getLevel0().getLevelData());
     }
 
     private void renderLevel(){

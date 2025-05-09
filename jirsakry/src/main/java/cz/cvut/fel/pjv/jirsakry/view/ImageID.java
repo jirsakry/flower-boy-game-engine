@@ -8,7 +8,8 @@ public enum ImageID {
     CHARACTER_JUMP("jump.png"),
     CHARACTER_JUMP_UP("jumpUp.png"),
     CHARACTER_JUMP_DOWN("jumpDown.png"),
-    CHARACTER_DEATH("death.png"),;
+    CHARACTER_DEATH("death.png"),
+    FLOWER("Flower Pot 5 - COLORFUL.png");
 
 
     private final String fileName;

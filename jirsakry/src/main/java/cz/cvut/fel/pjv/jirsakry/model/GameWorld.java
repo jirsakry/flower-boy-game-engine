@@ -11,21 +11,23 @@ public class GameWorld{
     public static int COLS = 20;
     public static int ROWS = 12;
 
-    private List<Enemy>  enemies;
-    private List<Platform> platforms;
+    GameState gameState;
 
     private Level level0;
+    private int levelFlowerCount;
 
     private double playerSpeed = 2;
     private int playerMaxHealth = 2;
     private int playerCurrentHealth = 1;
-    private boolean playerCollision = false;
+    private int playerFlowerCount = 0;
 
     //jump and gravity
     private double playerJumpStrength = -15;
     private double gravity = 0.6;
 
-    private GameObject background;
+    private List<Enemy>  enemies;
+    private List<Platform> platforms;
+    private List<Flower> flowers;
     private Player player;
 
     public static int[][] levelData = {
@@ -33,10 +35,10 @@ public class GameWorld{
             {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0},
-            {0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0},
             {0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -46,55 +48,44 @@ public class GameWorld{
     public void init(){
         enemies = new ArrayList<>();
         level0 = new Level(levelData);
+        flowers = new ArrayList<>();
         level0.load(levelData);
         platforms = level0.getPlatforms();
+        gameState = GameState.PLAYING;
 
-        background = new GameObject(0, 0, 1280, 768) {
-            @Override
-            public double getX() {
-                return super.getX();
-            }
 
-            @Override
-            public double getY() {
-                return super.getY();
-            }
-
-            @Override
-            public double getWidth() {
-                return super.getWidth();
-            }
-
-            @Override
-            public double getHeight() {
-                return super.getHeight();
-            }
-        };
         player = new Player(80, 600, 64, 64,
                 playerSpeed, playerMaxHealth, playerCurrentHealth, playerJumpStrength, gravity);
+        flowers.add(new Flower(TILE_SIZE*2, TILE_SIZE*8, 43, 48));
+        levelFlowerCount++;
+        flowers.add(new Flower(TILE_SIZE*11, TILE_SIZE*3, 43, 48));
+        levelFlowerCount++;
+        flowers.add(new Flower(TILE_SIZE*16, TILE_SIZE*4, 43, 48));
+        levelFlowerCount++;
     }
 
     public void update(){
+        if(playerFlowerCount == levelFlowerCount){
+            gameState = GameState.WIN;
+        }
         player.update();
         checkCollisions();
-        playerCollision = false;
-        for (Platform platform : platforms) {
-            if(player.getHitBox().intersects(platform.getHitBox())){
-                playerCollision = true;
-            }
-        }
     }
 
     private void checkCollisions(){
         // TODO
-        boolean stageCollision = false;
-        if (player.getHitBox().intersects(background.getTopEdge()) ||
-                player.getHitBox().intersects(background.getBottomEdge()) ||
-                player.getHitBox().intersects(background.getLeftEdge()) ||
-                player.getHitBox().intersects(background.getRightEdge())) {
-            stageCollision = true;
+        checkFlowerPickUp();
+    }
+
+    private void checkFlowerPickUp() {
+        for (Flower flower : flowers) {
+            if(!(flower.isCollected())) {
+                if (flower.getHitBox().intersects(player.getHitBox())) {
+                    flower.setCollected(true);
+                    playerFlowerCount++;
+                }
+            }
         }
-//        System.out.println("stageCollision: " + stageCollision);
     }
 
     public void moveRight() {
@@ -114,15 +105,28 @@ public class GameWorld{
         player.jump();
     }
 
+
     public Player getPlayer() {
         return player;
+    }
+
+    public List<Flower> getFlowers() {
+        return flowers;
+    }
+
+    public int getPlayerFlowerCount() {
+        return playerFlowerCount;
     }
 
     public Level getLevel0() {
         return level0;
     }
 
-    public boolean isPlayerCollision() {
-        return playerCollision;
+    public GameState getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
     }
 }

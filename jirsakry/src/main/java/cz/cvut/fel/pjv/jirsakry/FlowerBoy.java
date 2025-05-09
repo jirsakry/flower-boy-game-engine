@@ -1,19 +1,22 @@
 package cz.cvut.fel.pjv.jirsakry;
 
 import cz.cvut.fel.pjv.jirsakry.controller.Controller;
+import cz.cvut.fel.pjv.jirsakry.model.GameState;
 import cz.cvut.fel.pjv.jirsakry.model.GameWorld;
 import cz.cvut.fel.pjv.jirsakry.view.GameRenderer;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.EventType;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 
-public class JumpingGame extends Application {
+public class FlowerBoy extends Application {
     private GameWorld gameWorld;
     private Controller controller;
     private GameRenderer gameRenderer;
@@ -38,12 +41,34 @@ public class JumpingGame extends Application {
         gameRenderer.loadAnimations();
 
         gameWorld.init();
+
+        StackPane gameRoot = new StackPane(canvas);
+        Scene gameScene = new Scene(gameRoot, gameRenderer.getBackgroundWidth(), gameRenderer.getBackgroundHeight());
+
+        Canvas winCanvas = new Canvas(gameRenderer.getBackgroundWidth(), gameRenderer.getBackgroundHeight());
+        StackPane winRoot = new StackPane(winCanvas);
+        Scene winScreen = new Scene(winRoot, gameRenderer.getBackgroundWidth(), gameRenderer.getBackgroundHeight());
+
+        gameScene.addEventHandler(KeyEvent.KEY_PRESSED, controller::handleKeyPressed);
+        gameScene.addEventHandler(KeyEvent.KEY_RELEASED, controller::handleKeyReleased);
+
         lastCheck = System.nanoTime();
-        AnimationTimer timer = new AnimationTimer() {
+        AnimationTimer timer = new AnimationTimer() { // generated game loop
             private long lastUpdate = 0;
 
             @Override
-            public void handle(long now) { // TODO: Very temporary, i hope...
+            public void handle(long now) {
+                if(gameWorld.getGameState() == GameState.WIN) {
+                    if(stage.getScene() != winScreen) {
+                        stage.setScene(winScreen);
+                        GraphicsContext gc = winCanvas.getGraphicsContext2D();
+                        gc.setFill(Color.DARKGREEN);
+                        gc.setFont(new Font(25));
+                        gc.fillText("YOU COLLECTED ALL THE FLOWERS, GOOD JOB!",
+                                GameWorld.SCREEN_WIDTH / 2 - 100,
+                                GameWorld.SCREEN_HEIGHT / 2);
+                    }
+                }
                 if (now - lastCheck >= SECOND) {
                     fps = fpsCount;
                     ups = upsCount;
@@ -55,10 +80,12 @@ public class JumpingGame extends Application {
 
                 // Update logiky hry (fixní časový krok)
                 if (now - lastUpdate >= SECOND / 120) { // 120 UPS
-                    gameWorld.update();
-                    controller.update();
-                    upsCount++;
-                    lastUpdate = now;
+                    if(gameWorld.getGameState() != GameState.PAUSED) {
+                        gameWorld.update();
+                        controller.update();
+                        upsCount++;
+                        lastUpdate = now;
+                    }
                 }
 
                 // Vykreslení (co nejčastěji)
@@ -68,17 +95,11 @@ public class JumpingGame extends Application {
 
         };timer.start();
 
-        StackPane root = new StackPane(canvas);
-        Scene scene = new Scene(root, gameRenderer.getBackgroundWidth(), gameRenderer.getBackgroundHeight());
 
-        scene.addEventHandler(KeyEvent.KEY_PRESSED, event -> {controller.handleKeyPressed(event);});
-        scene.addEventHandler(KeyEvent.KEY_RELEASED, event -> {controller.handleKeyReleased(event);});
-
-
-        stage.setTitle("Jumping Game");
+        stage.setTitle("Flower Boy");
         stage.setResizable(false);
         stage.requestFocus();
-        stage.setScene(scene);
+        stage.setScene(gameScene);
         stage.show();
     }
 

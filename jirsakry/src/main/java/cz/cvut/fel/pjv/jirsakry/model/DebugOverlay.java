@@ -18,7 +18,7 @@ public class DebugOverlay { // generated
         gc.fillText("DEBUG_OVERLAY", GameWorld.SCREEN_WIDTH/2 - 100, 20);
 
         // player hitbox
-        renderHitBox(gc, gameWorld);
+        renderHitBoxes(gc, gameWorld);
 
         // Pozice objektu
         String position = String.format("X: %.2f, Y: %.2f", gameWorld.getPlayer().getHitBox().getMinX(), gameWorld.getPlayer().getHitBox().getMinY());
@@ -33,9 +33,8 @@ public class DebugOverlay { // generated
         String tileIndex = String.format("Tile: [%d, %d]", (int)xIndex, (int)yIndex);
         gc.fillText(tileIndex, 10, 80);
 
-        // Hodnota dlaždice
-        int value = levelData[(int)yIndex][(int)xIndex];
-        gc.fillText("Tile value: " + value, 10, 100);
+        // playerFlowerCount
+        gc.fillText("playerFlowerCount: " + gameWorld.getPlayerFlowerCount(),  10, 100);
 
         // inAir
         gc.fillText("inAir: " + gameWorld.getPlayer().isInAir(), 10, 120);
@@ -43,18 +42,22 @@ public class DebugOverlay { // generated
         // moving
         gc.fillText("moving: " + gameWorld.getPlayer().isMoving(), 10, 140);
 
-        // playerState
-        gc.fillText("playerState: " + gameWorld.getPlayer().getPlayerState(), 10, 160);
+        // gameState
+        gc.fillText("gameState: " + gameWorld.getGameState(), 10, 160);
     }
 
     public static void toggleDebug() {
         showDebug = !showDebug;
     }
 
-    private static void renderHitBox(GraphicsContext gc, GameWorld gameWorld) {
+    private static void renderHitBoxes(GraphicsContext gc, GameWorld gameWorld) {
         BoundingBox playerHitBox = gameWorld.getPlayer().getHitBox();
 
         gc.setStroke(Color.RED);
         gc.strokeRect(playerHitBox.getMinX(), playerHitBox.getMinY(), playerHitBox.getWidth(), playerHitBox.getHeight());
+
+        for(Flower flower : gameWorld.getFlowers()){
+            gc.strokeRect(flower.getX(), flower.getY(), flower.getWidth(), flower.getHeight());
+        }
     }
 }
