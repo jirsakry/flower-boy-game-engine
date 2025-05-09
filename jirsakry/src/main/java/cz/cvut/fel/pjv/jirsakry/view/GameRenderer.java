@@ -8,6 +8,7 @@ import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -44,20 +45,29 @@ public class GameRenderer {
         gc = canvas.getGraphicsContext2D();
         clearCanvas(canvas);
 
-        for(Flower flower : gameWorld.getFlowers()){
-            if(!(flower.isCollected())) {
-                gc.drawImage(images.get(ImageID.FLOWER), flower.getX(), flower.getY());
-            }
+        if(gameWorld.getGameState() == GameState.PAUSED){
+            gc.setFill(Color.BLACK);
+            gc.setFont(new Font(20));
+            gc.fillText("PAUSED", backgroundWidth/2 - 50, 60);
         }
 
+        renderFlowers();
         renderCharacter();
         renderLevel();
 
         DebugOverlay.draw(gc, gameWorld, gameWorld.getLevel0().getLevelData());
     }
 
+    private void renderFlowers() {
+        for(Flower flower : gameWorld.getFlowers()){
+            if(!(flower.isCollected())) {
+                gc.drawImage(images.get(ImageID.FLOWER), flower.getX(), flower.getY());
+            }
+        }
+    }
+
     private void renderCharacter() {
-        boolean facingRight = gameWorld.getPlayer().getPlayerState() == PlayerState.FACING_RIGHT ? true : false;
+        boolean facingRight = gameWorld.getPlayer().getPlayerState() == PlayerState.FACING_RIGHT;
 
         int invertedImageOffset;
         if (facingRight) { // centering the inverted animations

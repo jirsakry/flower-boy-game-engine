@@ -9,6 +9,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -42,6 +43,7 @@ public class FlowerBoy extends Application {
 
         gameWorld.init();
 
+
         StackPane gameRoot = new StackPane(canvas);
         Scene gameScene = new Scene(gameRoot, gameRenderer.getBackgroundWidth(), gameRenderer.getBackgroundHeight());
 
@@ -52,20 +54,25 @@ public class FlowerBoy extends Application {
         gameScene.addEventHandler(KeyEvent.KEY_PRESSED, controller::handleKeyPressed);
         gameScene.addEventHandler(KeyEvent.KEY_RELEASED, controller::handleKeyReleased);
 
+        MainMenu mainMenu = new MainMenu(gameScene, stage, gameWorld);
+
         lastCheck = System.nanoTime();
         AnimationTimer timer = new AnimationTimer() { // generated game loop
             private long lastUpdate = 0;
 
             @Override
             public void handle(long now) {
+                if(gameWorld.getGameState() == GameState.MAIN_MENU){
+                    mainMenu.show();
+                }
                 if(gameWorld.getGameState() == GameState.WIN) {
                     if(stage.getScene() != winScreen) {
                         stage.setScene(winScreen);
                         GraphicsContext gc = winCanvas.getGraphicsContext2D();
                         gc.setFill(Color.DARKGREEN);
-                        gc.setFont(new Font(25));
+                        gc.setFont(new Font(35));
                         gc.fillText("YOU COLLECTED ALL THE FLOWERS, GOOD JOB!",
-                                GameWorld.SCREEN_WIDTH / 2 - 100,
+                                400,
                                 GameWorld.SCREEN_HEIGHT / 2);
                     }
                 }
@@ -97,6 +104,7 @@ public class FlowerBoy extends Application {
 
 
         stage.setTitle("Flower Boy");
+        stage.getIcons().add(new Image("/Flower 9 - ORANGE.png"));
         stage.setResizable(false);
         stage.requestFocus();
         stage.setScene(gameScene);

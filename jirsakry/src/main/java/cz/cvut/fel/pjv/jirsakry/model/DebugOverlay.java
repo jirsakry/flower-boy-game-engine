@@ -6,7 +6,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 public class DebugOverlay { // generated
-    private static boolean showDebug = true;
+    private static boolean showDebug = false;
     private static final Font DEBUG_FONT = Font.font("Arial", 16);
 
     public static void draw(GraphicsContext gc, GameWorld gameWorld, int[][] levelData) {

@@ -51,7 +51,7 @@ public class GameWorld{
         flowers = new ArrayList<>();
         level0.load(levelData);
         platforms = level0.getPlatforms();
-        gameState = GameState.PLAYING;
+        gameState = GameState.MAIN_MENU;
 
 
         player = new Player(80, 600, 64, 64,
