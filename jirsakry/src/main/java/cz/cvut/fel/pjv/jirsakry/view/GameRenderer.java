@@ -3,9 +3,11 @@ package cz.cvut.fel.pjv.jirsakry.view;
 import cz.cvut.fel.pjv.jirsakry.model.DebugOverlay;
 import cz.cvut.fel.pjv.jirsakry.model.GameWorld;
 import cz.cvut.fel.pjv.jirsakry.model.Platform;
+import cz.cvut.fel.pjv.jirsakry.model.PlayerState;
 import javafx.geometry.BoundingBox;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -22,6 +24,8 @@ public class GameRenderer {
     private final Map<ImageID, Image> images;
     private double backgroundWidth;
     private double backgroundHeight;
+
+    private int invertedImageOffset = 0;
 
 
     public GameRenderer(GameWorld gameWorld) {
@@ -44,40 +48,65 @@ public class GameRenderer {
 
     public void render(Canvas canvas){
         gc = canvas.getGraphicsContext2D();
-//        gc.drawImage(images.get(ImageID.BACKGROUND), 0, 0);
         clearCanvas(canvas);
-        animManager.updateAnimationTick();
-        if(gameWorld.getPlayer().isMoving()) {
-            gc.drawImage(
-                    animManager.getIdleAnim()[animManager.getAnimFrame()],
-                    gameWorld.getPlayer().getX(), gameWorld.getPlayer().getY()
-            );
-        } else {
-            gc.drawImage(
-                    animManager.getRunAnim()[animManager.getAnimFrame()],
-                    gameWorld.getPlayer().getX(), gameWorld.getPlayer().getY()
-            );
+
+        boolean facingRight = gameWorld.getPlayer().getPlayerState() == PlayerState.FACING_RIGHT ? true : false;
+        if (facingRight) {
+            invertedImageOffset = 0;
+        }else{
+            invertedImageOffset = 4;
         }
 
-        renderLevel(gc);
-        renderHitBox(gc);
+        if(gameWorld.getPlayer().isInAir()) { // jumping
+            animManager.updateAnimationTick(animManager.getJumpLength());
+            if (gameWorld.getPlayer().getVelocityY() < 0) { // jumping up
+                if (animManager.getAnimFrame() < animManager.getJumpUpAnim().length) {
+                    gc.drawImage(
+                            facingRight ? animManager.getJumpUpAnim()[animManager.getAnimFrame()]
+                                        : animManager.getJumpUpAnimMirrored()[animManager.getAnimFrame()],
+                            gameWorld.getPlayer().getX() - invertedImageOffset, gameWorld.getPlayer().getY()
+                    );
+                }
+            } else { // falling
+                if (animManager.getAnimFrame() < animManager.getJumpDownAnim().length) {
+                    gc.drawImage(
+                            facingRight ? animManager.getJumpDownAnim()[animManager.getAnimFrame()]
+                                        : animManager.getJumpDownAnimMirrored()[animManager.getAnimFrame()],
+                            gameWorld.getPlayer().getX() - invertedImageOffset, gameWorld.getPlayer().getY()
+                    );
+                }
+            }
+        } else {
+            if(gameWorld.getPlayer().isMoving()) { // running
+                animManager.updateAnimationTick(animManager.getRunLength());
+                if (animManager.getAnimFrame() < animManager.getRunAnim().length) {
+                    gc.drawImage(
+                            facingRight ? animManager.getRunAnim()[animManager.getAnimFrame()]
+                                        : animManager.getRunAnimMirrored()[animManager.getAnimFrame()],
+                            gameWorld.getPlayer().getX() - invertedImageOffset, gameWorld.getPlayer().getY()
+                    );
+                }
+            } else { // idle
+                animManager.updateAnimationTick(animManager.getIdleLength());
+                if (animManager.getAnimFrame() < animManager.getIdleAnim().length) {
+                    gc.drawImage(
+                            facingRight ? animManager.getIdleAnim()[animManager.getAnimFrame()]
+                                        : animManager.getIdleAnimMirrored()[animManager.getAnimFrame()],
+                            gameWorld.getPlayer().getX() - invertedImageOffset, gameWorld.getPlayer().getY()
+                    );
+                }
+            }
+        }
 
+        renderLevel();
         DebugOverlay.draw(gc, gameWorld, gameWorld.getLevel0().getLevelData());
     }
 
-
-    private void renderLevel(GraphicsContext gc){
+    private void renderLevel(){
         for (Platform platform : gameWorld.getLevel0().getPlatforms()){
-            gc.setStroke(Color.BLACK);
+            gc.setFill(Color.DARKGREEN);
             gc.fillRect(platform.getX(), platform.getY(), platform.getWidth(), platform.getHeight());
         }
-    }
-
-    private void renderHitBox(GraphicsContext gc){
-        BoundingBox playerHitBox = gameWorld.getPlayer().getHitBox();
-
-        gc.setStroke(Color.RED);
-        gc.strokeRect(playerHitBox.getMinX(), playerHitBox.getMinY(), playerHitBox.getWidth(), playerHitBox.getHeight());
     }
 
     public void clearCanvas(Canvas canvas) {

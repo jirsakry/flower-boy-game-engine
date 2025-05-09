@@ -70,7 +70,7 @@ public class GameWorld{
                 return super.getHeight();
             }
         };
-        player = new Player(620, 200, 64, 64,
+        player = new Player(80, 600, 64, 64,
                 playerSpeed, playerMaxHealth, playerCurrentHealth, playerJumpStrength, gravity);
     }
 

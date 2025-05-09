@@ -12,6 +12,7 @@ public class Player extends GameObject {
     private boolean moving = false;
 
     //jump and gravity
+    private boolean jump = false;
     private boolean inAir = false;
     private double jumpStrength;
     private double gravity;
@@ -34,6 +35,7 @@ public class Player extends GameObject {
     @Override
     public void update(){
         moving = velocityX != 0; // is moving?
+        checkPlayerState();
 
         if(!inAir){
             if(!(IsEntityOnFloor(getHitBox(), GameWorld.levelData))){
@@ -62,6 +64,15 @@ public class Player extends GameObject {
             updateHorizontalMove();
         }
         velocityX = 0;
+    }
+
+    private void checkPlayerState() {
+        if (velocityX > 0){
+            playerState = PlayerState.FACING_RIGHT;
+        }
+        if (velocityX < 0){
+            playerState = PlayerState.FACING_LEFT;
+        }
     }
 
     private void resetInAir(){
@@ -99,6 +110,7 @@ public class Player extends GameObject {
         //TODO: non-static jump height
         if(!inAir){
             inAir = true;
+            jump = true;
             velocityY += jumpStrength;
         }
     }
@@ -128,5 +140,9 @@ public class Player extends GameObject {
 
     public boolean isMoving() {
         return moving;
+    }
+
+    public PlayerState getPlayerState() {
+        return playerState;
     }
 }
