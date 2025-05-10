@@ -6,7 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+
 
 public class PauseMenu {
     private final VBox pauseRoot;
@@ -28,7 +28,11 @@ public class PauseMenu {
         resumeButton.setOnAction(e -> resumeGame());
 
         Button mainMenuButton = new Button("Main Menu");
-        mainMenuButton.setOnAction(e -> goToMainMenu());
+        mainMenuButton.setOnAction(e -> {
+            goToMainMenu();
+            gameWorld.getTimer().reset();
+            System.out.println("timer reset");
+        });
 
         pauseRoot.getChildren().addAll(resumeButton, mainMenuButton);
         gameRoot.getChildren().add(pauseRoot);
@@ -49,10 +53,14 @@ public class PauseMenu {
     public void toggle() {
         if (gameWorld.getGameState() == GameState.PAUSED) {
             resumeGame();
+            gameWorld.getTimer().start();
+            System.out.println("timer resumed");
         } else if (gameWorld.getGameState() == GameState.PLAYING) {
             gameWorld.setGameState(GameState.PAUSED);
             pauseRoot.setVisible(true);
             gameRoot.setOpacity(0.7);
+            gameWorld.getTimer().stop();
+            System.out.println("timer paused");
         }
     }
 }

@@ -29,7 +29,11 @@ public class MainMenu {
         titleText.setFont(new Font("Impact", 40));
 
         Button playButton = new Button("Play");
-        playButton.setOnAction(e -> startGame());
+        playButton.setOnAction(e -> {
+            startGame();
+            gameWorld.getTimer().start();
+            System.out.println("timer started");
+        });
 
         Button exitButton = new Button("Exit");
         exitButton.setOnAction(e -> stage.close());
@@ -41,6 +45,7 @@ public class MainMenu {
     private void startGame() {
         stage.setScene(gameScene);
         gameWorld.setGameState(GameState.PLAYING);
+        gameWorld.newGame();
     }
 
     public void showMainMenu() {

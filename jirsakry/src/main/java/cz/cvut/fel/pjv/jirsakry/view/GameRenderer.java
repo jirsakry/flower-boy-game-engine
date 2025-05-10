@@ -44,7 +44,8 @@ public class GameRenderer {
     public void render(Canvas canvas){
         gc = canvas.getGraphicsContext2D();
         clearCanvas(canvas);
-
+        gc.setFont(new Font("Impact", 30));
+        gc.fillText(gameWorld.getTimer().getFormattedTime(), 1000, 30);
         renderFlowers();
         renderCharacter();
         renderLevel();
@@ -114,8 +115,7 @@ public class GameRenderer {
 
     private void renderLevel(){
         for (Platform platform : gameWorld.getLevel0().getPlatforms()){
-            gc.setFill(Color.DARKGREEN);
-            gc.fillRect(platform.getX(), platform.getY(), platform.getWidth(), platform.getHeight());
+            gc.drawImage(images.get(ImageID.GRASS), platform.getX(), platform.getY());
         }
     }
 

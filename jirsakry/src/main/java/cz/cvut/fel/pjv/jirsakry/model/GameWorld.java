@@ -25,10 +25,13 @@ public class GameWorld{
     private double playerJumpStrength = -15;
     private double gravity = 0.6;
 
-    private List<Enemy>  enemies;
+    private List<Enemy> enemies;
     private List<Platform> platforms;
     private List<Flower> flowers;
     private Player player;
+
+    // timer
+    Timer timer = new Timer();
 
     public static int[][] levelData = {
             {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -53,30 +56,40 @@ public class GameWorld{
         platforms = level0.getPlatforms();
         gameState = GameState.MAIN_MENU;
 
+        newGame();
+    }
 
+    public void newGame() {
         player = new Player(80, 600, 64, 64,
                 playerSpeed, playerMaxHealth, playerCurrentHealth, playerJumpStrength, gravity);
-        flowers.add(new Flower(TILE_SIZE*2, TILE_SIZE*8, 43, 48));
+        double flowerOffset = TILE_SIZE - 48;
+        flowers.add(new Flower(TILE_SIZE*2, TILE_SIZE*8 + flowerOffset , 43, 48)); // TODO: better width/height setting
         levelFlowerCount++;
-        flowers.add(new Flower(TILE_SIZE*11, TILE_SIZE*3, 43, 48));
+        flowers.add(new Flower(TILE_SIZE*11, TILE_SIZE*3+ flowerOffset, 43, 48));
         levelFlowerCount++;
-        flowers.add(new Flower(TILE_SIZE*16, TILE_SIZE*4, 43, 48));
+        flowers.add(new Flower(TILE_SIZE*16, TILE_SIZE*4+ flowerOffset, 43, 48));
         levelFlowerCount++;
-        flowers.add(new Flower(TILE_SIZE*0, TILE_SIZE*2, 43, 48));
+        flowers.add(new Flower(TILE_SIZE*0, TILE_SIZE*2+ flowerOffset, 43, 48));
         levelFlowerCount++;
+
+        timer.reset();
+        timer.start();
     }
 
     public void update(){
         if(playerFlowerCount == levelFlowerCount
         && gameState != GameState.WIN) {
             gameState = GameState.WIN;
+            timer.stop();
+            System.out.println("timer stopped");
+            System.out.println("Your time: " + timer.getFormattedTime());
         }
+
         player.update();
         checkCollisions();
     }
 
     private void checkCollisions(){
-        // TODO
         checkFlowerPickUp();
     }
 
@@ -93,7 +106,6 @@ public class GameWorld{
 
     public void moveRight() {
         player.moveRight();
-
     }
     public void moveLeft() {
         player.moveLeft();
@@ -131,5 +143,9 @@ public class GameWorld{
 
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
+    }
+
+    public Timer getTimer() {
+        return timer;
     }
 }
