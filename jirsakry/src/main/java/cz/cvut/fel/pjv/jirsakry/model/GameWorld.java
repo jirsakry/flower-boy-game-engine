@@ -35,8 +35,8 @@ public class GameWorld{
             {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0},
+            {0,0,1,0,1,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0},
+            {0,0,0,0,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0},
             {0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0},
             {0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0},
             {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0},
@@ -62,10 +62,13 @@ public class GameWorld{
         levelFlowerCount++;
         flowers.add(new Flower(TILE_SIZE*16, TILE_SIZE*4, 43, 48));
         levelFlowerCount++;
+        flowers.add(new Flower(TILE_SIZE*0, TILE_SIZE*2, 43, 48));
+        levelFlowerCount++;
     }
 
     public void update(){
-        if(playerFlowerCount == levelFlowerCount){
+        if(playerFlowerCount == levelFlowerCount
+        && gameState != GameState.WIN) {
             gameState = GameState.WIN;
         }
         player.update();
@@ -89,17 +92,17 @@ public class GameWorld{
     }
 
     public void moveRight() {
-            player.moveRight();
+        player.moveRight();
 
     }
     public void moveLeft() {
-            player.moveLeft();
+        player.moveLeft();
     }
     public void moveDown() {
-            player.moveDown();
+        player.moveDown();
     }
     public void moveUp() {
-            player.moveUp();
+        player.moveUp();
     }
     public void jump() {
         player.jump();

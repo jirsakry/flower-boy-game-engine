@@ -45,12 +45,6 @@ public class GameRenderer {
         gc = canvas.getGraphicsContext2D();
         clearCanvas(canvas);
 
-        if(gameWorld.getGameState() == GameState.PAUSED){
-            gc.setFill(Color.BLACK);
-            gc.setFont(new Font(20));
-            gc.fillText("PAUSED", backgroundWidth/2 - 50, 60);
-        }
-
         renderFlowers();
         renderCharacter();
         renderLevel();
@@ -78,7 +72,7 @@ public class GameRenderer {
 
         if(gameWorld.getPlayer().isInAir()) { // jumping
             animManager.updateAnimationTick(animManager.getJumpLength());
-            if (gameWorld.getPlayer().getVelocityY() < 0) { // jumping up
+            if (gameWorld.getPlayer().getVelocityY() < 1) { // jumping up
                 if (animManager.getAnimFrame() < animManager.getJumpUpAnim().length) {
                     gc.drawImage(
                             facingRight ? animManager.getJumpUpAnim()[animManager.getAnimFrame()]

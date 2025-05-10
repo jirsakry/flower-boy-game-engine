@@ -37,17 +37,6 @@ public class Controller {
         if(event.getCode() == KeyCode.F3){
             DebugOverlay.toggleDebug();
         }
-        if(event.getCode() == KeyCode.ESCAPE){
-            togglePaused();
-        }
-    }
-
-    private void togglePaused() {
-        if(gameWorld.getGameState() != GameState.PAUSED){
-            gameWorld.setGameState(GameState.PAUSED);
-        }else if(gameWorld.getGameState() == GameState.PAUSED){
-            gameWorld.setGameState(GameState.PLAYING);
-        }
     }
 
     public void handleKeyReleased(KeyEvent event) {

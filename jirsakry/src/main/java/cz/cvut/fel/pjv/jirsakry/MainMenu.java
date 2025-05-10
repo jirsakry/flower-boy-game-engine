@@ -5,8 +5,8 @@ import cz.cvut.fel.pjv.jirsakry.model.GameWorld;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -21,25 +21,34 @@ public class MainMenu {
         this.stage = stage;
         this.gameWorld = gameWorld;
 
-        Button startGameButton = new Button("Play");
-        Button exitGameButton = new Button("Exit");
-        Text startGameText = new Text();
-        startGameText.setText("FLOWER BOY");
-//        startGameText.
-        startGameButton.setOnAction(e -> {
-            stage.setScene(gameScene);
-            gameWorld.setGameState(GameState.PLAYING);
-        });
-        exitGameButton.setOnAction(e -> {
-            stage.close();
-        });
-        VBox vBox = new VBox(startGameButton, exitGameButton);
-        vBox.setSpacing(30);
-        vBox.setAlignment(Pos.CENTER);
-        mainMenuScene = new Scene(vBox, GameWorld.SCREEN_WIDTH, GameWorld.SCREEN_HEIGHT);
+        VBox mainMenuRoot = new VBox();
+        mainMenuRoot.setSpacing(15);
+        mainMenuRoot.setAlignment(Pos.CENTER);
+
+        Text titleText = new Text("FLOWER BOY");
+        titleText.setFont(new Font("Impact", 40));
+
+        Button playButton = new Button("Play");
+        playButton.setOnAction(e -> startGame());
+
+        Button exitButton = new Button("Exit");
+        exitButton.setOnAction(e -> stage.close());
+
+        mainMenuRoot.getChildren().addAll(titleText, playButton, exitButton);
+        mainMenuScene = new Scene(mainMenuRoot, GameWorld.SCREEN_WIDTH, GameWorld.SCREEN_HEIGHT);
     }
 
-    public void show() {
+    private void startGame() {
+        stage.setScene(gameScene);
+        gameWorld.setGameState(GameState.PLAYING);
+    }
+
+    public void showMainMenu() {
+        gameWorld.setGameState(GameState.MAIN_MENU);
         stage.setScene(mainMenuScene);
+    }
+
+    public Scene getMainMenuScene() {
+        return mainMenuScene;
     }
 }
