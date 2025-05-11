@@ -22,7 +22,7 @@ public class AnimManager {
     private final Image[] jumpDownAnimMirrored;
     private final Image[] deathAnimMirrored;
 
-    private int animSpeed = 14;
+    private int animSpeed = 13;
     private int animTick;
     private int animFrame = 0;
 
@@ -102,14 +102,12 @@ public class AnimManager {
     private void loadDeathAnim() {
         Image spriteSheet = images.get(ImageID.CHARACTER_DEATH);
         double frameSize = GameWorld.TILE_SIZE;
-        for (int row = 0; row < 3; row++) { // sprite sheet is 3x3 images
-            for (int col = 0; col < 3; col++) {
-                for (int i = 0; i < deathLength; i++) {
-                    deathAnim[i] = new WritableImage(spriteSheet.getPixelReader(),
-                            (int) (frameSize * row), (int) (frameSize * col),
-                            (int) frameSize, (int) frameSize);
-                }
-            }
+        int frameCount = (int) (spriteSheet.getWidth() / frameSize);
+        deathLength = Math.min(frameCount, deathAnim.length);
+        for (int i = 0; i < deathLength; i++) {
+            deathAnim[i] = new WritableImage(spriteSheet.getPixelReader(),
+                    (int) (i * frameSize), 0,
+                    (int) frameSize, (int) frameSize);
         }
     }
 

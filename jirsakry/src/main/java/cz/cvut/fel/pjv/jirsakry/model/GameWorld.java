@@ -11,79 +11,83 @@ public class GameWorld{
     public static int COLS = 20;
     public static int ROWS = 12;
 
-    GameState gameState;
+    private GameState gameState;
 
+    private Level currentLevel;
     private Level level0;
-    private int levelFlowerCount;
 
-    private double playerSpeed = 2;
+    private double playerSpeed = 1.7;
     private int playerMaxHealth = 2;
     private int playerCurrentHealth = 1;
     private int playerFlowerCount = 0;
 
     //jump and gravity
-    private double playerJumpStrength = -15;
+    private double playerJumpStrength = -11.7;
     private double gravity = 0.6;
 
-    private List<Enemy> enemies;
-    private List<Platform> platforms;
-    private List<Flower> flowers;
     private Player player;
+
 
     // timer
     Timer timer = new Timer();
 
     public static int[][] levelData = {
             {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,1,0,1,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0},
-            {0,0,0,0,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0},
-            {0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0},
+            {0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0},
+            {1,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,1,0,1,0,0,0,0,1,1,1,0,0,0,0,3,0,0,0},
+            {0,0,0,0,1,0,0,4,0,0,0,0,0,1,1,0,0,0,0,0},
+            {0,0,0,0,0,0,1,1,0,0,3,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,4,0,0,0},
+            {0,0,4,0,0,0,0,0,1,0,0,0,0,0,0,0,1,1,0,0},
             {0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+            {4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,3,0},
+            {1,1,1,1,1,1,1,1,5,1,1,1,1,1,1,1,1,1,1,1}
     };
 
     public void init(){
-        enemies = new ArrayList<>();
         level0 = new Level(levelData);
-        flowers = new ArrayList<>();
         level0.load(levelData);
-        platforms = level0.getPlatforms();
+
         gameState = GameState.MAIN_MENU;
 
+        currentLevel = level0;
+
+        player = new Player(40, 600, 64, 64,
+                playerSpeed, playerMaxHealth, playerCurrentHealth, playerJumpStrength, gravity, currentLevel);
         newGame();
     }
 
     public void newGame() {
-        player = new Player(80, 600, 64, 64,
-                playerSpeed, playerMaxHealth, playerCurrentHealth, playerJumpStrength, gravity);
-        double flowerOffset = TILE_SIZE - 48;
-        flowers.add(new Flower(TILE_SIZE*2, TILE_SIZE*8 + flowerOffset , 43, 48)); // TODO: better width/height setting
-        levelFlowerCount++;
-        flowers.add(new Flower(TILE_SIZE*11, TILE_SIZE*3+ flowerOffset, 43, 48));
-        levelFlowerCount++;
-        flowers.add(new Flower(TILE_SIZE*16, TILE_SIZE*4+ flowerOffset, 43, 48));
-        levelFlowerCount++;
-        flowers.add(new Flower(TILE_SIZE*0, TILE_SIZE*2+ flowerOffset, 43, 48));
-        levelFlowerCount++;
+        player.reset();
+
+        playerFlowerCount = 0;
+        for(Flower flower: level0.getFlowers()){
+            flower.setCollected(false);
+        }
 
         timer.reset();
-        timer.start();
+        if(gameState == GameState.MAIN_MENU){
+            timer.stop();
+        }
+        else{
+            gameState = GameState.PLAYING;
+            timer.start();
+        }
     }
 
     public void update(){
-        if(playerFlowerCount == levelFlowerCount
+        if(playerFlowerCount == level0.getFlowerCount()
         && gameState != GameState.WIN) {
             gameState = GameState.WIN;
             timer.stop();
             System.out.println("timer stopped");
             System.out.println("Your time: " + timer.getFormattedTime());
         }
+//        if(player.getPlayerState() == PlayerState.DEATH){
+//            newGame();
+//        }
 
         player.update();
         checkCollisions();
@@ -91,15 +95,24 @@ public class GameWorld{
 
     private void checkCollisions(){
         checkFlowerPickUp();
+        checkCactusHit();
     }
 
     private void checkFlowerPickUp() {
-        for (Flower flower : flowers) {
+        for (Flower flower : level0.getFlowers()) {
             if(!(flower.isCollected())) {
                 if (flower.getHitBox().intersects(player.getHitBox())) {
                     flower.setCollected(true);
                     playerFlowerCount++;
                 }
+            }
+        }
+    }
+
+    private void checkCactusHit() {
+        for (Cactus cactus : level0.getCacti()){
+            if(cactus.getHitBox().intersects(player.getHitBox())) {
+                player.setPlayerState(PlayerState.DEATH);
             }
         }
     }
@@ -125,10 +138,6 @@ public class GameWorld{
         return player;
     }
 
-    public List<Flower> getFlowers() {
-        return flowers;
-    }
-
     public int getPlayerFlowerCount() {
         return playerFlowerCount;
     }
@@ -141,11 +150,11 @@ public class GameWorld{
         return gameState;
     }
 
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
-    }
-
     public Timer getTimer() {
         return timer;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
     }
 }

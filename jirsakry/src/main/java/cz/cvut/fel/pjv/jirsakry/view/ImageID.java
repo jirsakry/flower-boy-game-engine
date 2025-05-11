@@ -9,7 +9,7 @@ public enum ImageID {
     CHARACTER_JUMP_UP("jumpUp.png"),
     CHARACTER_JUMP_DOWN("jumpDown.png"),
     CHARACTER_DEATH("death.png"),
-    FLOWER("Flower Pot 5 - COLORFUL.png"),
+    FLOWER("flower_pot.png"),
     CACTUS("cactus.png"),
     GRASS("grass_block.png"),;
 

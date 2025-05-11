@@ -5,4 +5,5 @@ module cz.cvut.fel.pjv.jirsakry {
 
     exports cz.cvut.fel.pjv.jirsakry;
     exports cz.cvut.fel.pjv.jirsakry.model;
+    exports cz.cvut.fel.pjv.jirsakry.view;
 }

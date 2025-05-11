@@ -1,7 +1,6 @@
 package cz.cvut.fel.pjv.jirsakry.controller;
 
-import cz.cvut.fel.pjv.jirsakry.model.DebugOverlay;
-import cz.cvut.fel.pjv.jirsakry.model.GameState;
+import cz.cvut.fel.pjv.jirsakry.view.DebugOverlay;
 import cz.cvut.fel.pjv.jirsakry.model.GameWorld;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -32,7 +31,7 @@ public class Controller {
             activeKeys.add(KeyCode.UP);
         }
         if(event.getCode() == KeyCode.SPACE){
-            activeKeys.add(KeyCode.SPACE);
+            gameWorld.jump();
         }
         if(event.getCode() == KeyCode.F3){
             DebugOverlay.toggleDebug();
@@ -51,9 +50,6 @@ public class Controller {
         }
         if(event.getCode() == KeyCode.UP){
             activeKeys.remove(KeyCode.UP);
-        }
-        if(event.getCode() == KeyCode.SPACE){
-            activeKeys.remove(KeyCode.SPACE);
         }
     }
 

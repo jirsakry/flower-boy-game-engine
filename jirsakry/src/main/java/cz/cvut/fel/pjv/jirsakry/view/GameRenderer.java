@@ -1,13 +1,9 @@
 package cz.cvut.fel.pjv.jirsakry.view;
 
 import cz.cvut.fel.pjv.jirsakry.model.*;
-import javafx.geometry.BoundingBox;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
 import java.io.FileInputStream;
@@ -44,20 +40,28 @@ public class GameRenderer {
     public void render(Canvas canvas){
         gc = canvas.getGraphicsContext2D();
         clearCanvas(canvas);
-        gc.setFont(new Font("Impact", 30));
+        gc.setFont(new Font("Constantia", 30));
         gc.fillText(gameWorld.getTimer().getFormattedTime(), 1000, 30);
-        renderFlowers();
+
         renderCharacter();
         renderLevel();
 
-        DebugOverlay.draw(gc, gameWorld, gameWorld.getLevel0().getLevelData());
+        DebugOverlay.draw(gc, gameWorld);
     }
 
-    private void renderFlowers() {
-        for(Flower flower : gameWorld.getFlowers()){
+    private void renderLevel(){
+        for (Platform platform : gameWorld.getLevel0().getPlatforms()){ // platforms
+            gc.drawImage(images.get(ImageID.GRASS), platform.getX(), platform.getY());
+        }
+
+        for(Flower flower : gameWorld.getLevel0().getFlowers()){ // flowers
             if(!(flower.isCollected())) {
                 gc.drawImage(images.get(ImageID.FLOWER), flower.getX(), flower.getY());
             }
+        }
+
+        for(Cactus cactus : gameWorld.getLevel0().getCacti()){
+            gc.drawImage(images.get(ImageID.CACTUS), cactus.getX(), cactus.getY());
         }
     }
 
@@ -71,7 +75,17 @@ public class GameRenderer {
             invertedImageOffset = 4;
         }
 
-        if(gameWorld.getPlayer().isInAir()) { // jumping
+        if(gameWorld.getPlayer().getPlayerState() == PlayerState.DEATH) { // death
+            animManager.updateAnimationTick(animManager.getDeathLength());
+            gc.drawImage(
+                    facingRight ? animManager.getDeathAnim()[animManager.getAnimFrame()]
+                            : animManager.getDeathAnimMirrored()[animManager.getAnimFrame()],
+                    gameWorld.getPlayer().getX() - invertedImageOffset, gameWorld.getPlayer().getY()
+            );
+            if (animManager.getAnimFrame() == animManager.getDeathAnim().length - 1) {
+                gameWorld.newGame();
+            }
+        } else if(gameWorld.getPlayer().isInAir()) { // jumping
             animManager.updateAnimationTick(animManager.getJumpLength());
             if (gameWorld.getPlayer().getVelocityY() < 1) { // jumping up
                 if (animManager.getAnimFrame() < animManager.getJumpUpAnim().length) {
@@ -110,12 +124,6 @@ public class GameRenderer {
                     );
                 }
             }
-        }
-    }
-
-    private void renderLevel(){
-        for (Platform platform : gameWorld.getLevel0().getPlatforms()){
-            gc.drawImage(images.get(ImageID.GRASS), platform.getX(), platform.getY());
         }
     }
 

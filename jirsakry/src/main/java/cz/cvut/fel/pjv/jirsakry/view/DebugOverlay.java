@@ -1,16 +1,22 @@
-package cz.cvut.fel.pjv.jirsakry.model;
+package cz.cvut.fel.pjv.jirsakry.view;
 
+import cz.cvut.fel.pjv.jirsakry.model.Cactus;
+import cz.cvut.fel.pjv.jirsakry.model.Flower;
+import cz.cvut.fel.pjv.jirsakry.model.GameWorld;
 import javafx.geometry.BoundingBox;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 public class DebugOverlay { // generated
-    private static boolean showDebug = false;
+    private static boolean showDebug = true;
     private static final Font DEBUG_FONT = Font.font("Arial", 16);
 
-    public static void draw(GraphicsContext gc, GameWorld gameWorld, int[][] levelData) {
+    public static void draw(GraphicsContext gc, GameWorld gameWorld) {
         if (!showDebug) return;
+
+        Font originalFont = gc.getFont();
+        Color originalFill = (Color) gc.getFill();
 
         gc.setFont(DEBUG_FONT);
         gc.setFill(Color.LIMEGREEN);
@@ -33,8 +39,9 @@ public class DebugOverlay { // generated
         String tileIndex = String.format("Tile: [%d, %d]", (int)xIndex, (int)yIndex);
         gc.fillText(tileIndex, 10, 80);
 
-        // playerFlowerCount
-        gc.fillText("playerFlowerCount: " + gameWorld.getPlayerFlowerCount(),  10, 100);
+        // doubleJumpReady + jump
+        gc.fillText("doubleJumpReady: " + gameWorld.getPlayer().isDoubleJumpReady() +
+                " jump: " + gameWorld.getPlayer().isJump(),  10, 100);
 
         // inAir
         gc.fillText("inAir: " + gameWorld.getPlayer().isInAir(), 10, 120);
@@ -44,6 +51,13 @@ public class DebugOverlay { // generated
 
         // gameState
         gc.fillText("gameState: " + gameWorld.getGameState(), 10, 160);
+
+        // playerState
+        gc.fillText("playerState: " + gameWorld.getPlayer().getPlayerState(), 10, 180);
+
+        gc.setFont(originalFont);
+        gc.setFill(originalFill);
+
     }
 
     public static void toggleDebug() {
@@ -54,10 +68,17 @@ public class DebugOverlay { // generated
         BoundingBox playerHitBox = gameWorld.getPlayer().getHitBox();
 
         gc.setStroke(Color.RED);
-        gc.strokeRect(playerHitBox.getMinX(), playerHitBox.getMinY(), playerHitBox.getWidth(), playerHitBox.getHeight());
+        gc.strokeRect(playerHitBox.getMinX(), playerHitBox.getMinY(),
+                playerHitBox.getWidth(), playerHitBox.getHeight());
 
-        for(Flower flower : gameWorld.getFlowers()){
-            gc.strokeRect(flower.getX(), flower.getY(), flower.getWidth(), flower.getHeight());
+        for(Flower flower : gameWorld.getLevel0().getFlowers()){
+            gc.strokeRect(flower.getHitBox().getMinX(), flower.getHitBox().getMinY(),
+                    flower.getHitBox().getWidth(), flower.getHitBox().getHeight());
+        }
+
+        for(Cactus cactus : gameWorld.getLevel0().getCacti()){
+            gc.strokeRect(cactus.getHitBox().getMinX(), cactus.getHitBox().getMinY(),
+                    cactus.getHitBox().getWidth(), cactus.getHitBox().getHeight());
         }
     }
 }

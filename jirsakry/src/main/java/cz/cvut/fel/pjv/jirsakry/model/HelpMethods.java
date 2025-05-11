@@ -36,7 +36,7 @@ public class HelpMethods { // from a tutorial
         if(velocityX > 0){ // going right
             double tileXPos = currentTile * GameWorld.TILE_SIZE;
             double xOffset = (GameWorld.TILE_SIZE - hitBox.getWidth());
-            return tileXPos + xOffset - 1;
+            return tileXPos + xOffset - 2;
         }
         else{ // going left
             return currentTile * GameWorld.TILE_SIZE;
@@ -56,8 +56,8 @@ public class HelpMethods { // from a tutorial
     }
 
     public static boolean IsEntityOnFloor(BoundingBox hitBox, int[][] levelData){
-        if(!(isSolid(hitBox.getMinX(), hitBox.getMaxY() + 1, levelData)) && // bottom left corner
-           !(isSolid(hitBox.getMaxX(), hitBox.getMaxY() + 1, levelData))){ // bottom right corner
+        if(!(isSolid(hitBox.getMinX() - 7, hitBox.getMaxY() + 1, levelData)) && // bottom left corner
+           !(isSolid(hitBox.getMaxX() + 7, hitBox.getMaxY() + 1, levelData))){ // bottom right corner
             return false;
         }
         return true;
