@@ -1,4 +1,4 @@
-package cz.cvut.fel.pjv.jirsakry;
+package cz.cvut.fel.pjv.jirsakry.scenes;
 
 import cz.cvut.fel.pjv.jirsakry.model.GameState;
 import cz.cvut.fel.pjv.jirsakry.model.GameWorld;
@@ -34,8 +34,6 @@ public class MainMenu {
         playButton.setAlignment(Pos.CENTER);
         playButton.setOnAction(e -> {
             startGame();
-            gameWorld.getTimer().start();
-            System.out.println("timer started");
         });
 
         Button howToPlayButton = new Button("How to play");
@@ -43,7 +41,7 @@ public class MainMenu {
         howToPlayButton.setPrefSize(150, 40);
         howToPlayButton.setAlignment(Pos.CENTER);
         howToPlayButton.setOnAction(e -> {
-            System.out.println("Já nic nedělám");
+            gameWorld.setGameState(GameState.HOW_TO_PLAY);
         });
 
         Button exitButton = new Button("Exit");
@@ -60,11 +58,12 @@ public class MainMenu {
         stage.setScene(gameScene);
         gameWorld.setGameState(GameState.PLAYING);
         gameWorld.newGame();
+        gameWorld.getTimer().start();
     }
 
     public void showMainMenu() {
-        gameWorld.setGameState(GameState.MAIN_MENU);
         stage.setScene(mainMenuScene);
+        gameWorld.setGameState(GameState.MAIN_MENU);
     }
 
     public Scene getMainMenuScene() {

@@ -1,4 +1,4 @@
-package cz.cvut.fel.pjv.jirsakry;
+package cz.cvut.fel.pjv.jirsakry.scenes;
 
 import cz.cvut.fel.pjv.jirsakry.model.GameState;
 import cz.cvut.fel.pjv.jirsakry.model.GameWorld;
@@ -61,6 +61,7 @@ public class WinScreen {
 
     public void showWinScreen() {
         stage.setScene(winScreen);
+        gameWorld.setGameState(GameState.WIN);
         timeMessage.setText("YOU DID IT IN:" + gameWorld.getTimer().getFormattedTime());
     }
 

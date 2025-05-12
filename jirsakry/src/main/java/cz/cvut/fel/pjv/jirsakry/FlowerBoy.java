@@ -3,6 +3,10 @@ package cz.cvut.fel.pjv.jirsakry;
 import cz.cvut.fel.pjv.jirsakry.controller.Controller;
 import cz.cvut.fel.pjv.jirsakry.model.GameState;
 import cz.cvut.fel.pjv.jirsakry.model.GameWorld;
+import cz.cvut.fel.pjv.jirsakry.scenes.HowToPlay;
+import cz.cvut.fel.pjv.jirsakry.scenes.MainMenu;
+import cz.cvut.fel.pjv.jirsakry.scenes.PauseMenu;
+import cz.cvut.fel.pjv.jirsakry.scenes.WinScreen;
 import cz.cvut.fel.pjv.jirsakry.view.GameRenderer;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -14,11 +18,15 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+import java.util.logging.Logger;
+
 
 public class FlowerBoy extends Application {
     private GameWorld gameWorld;
     private Controller controller;
     private GameRenderer gameRenderer;
+
+    private static final Logger LOGGER = Logger.getLogger(FlowerBoy.class.getName());
 
 
     // game loop
@@ -40,15 +48,16 @@ public class FlowerBoy extends Application {
         gameRenderer.loadAnimations();
 
         gameWorld.init();
-        gameWorld.setGameState(GameState.MAIN_MENU);
 
         StackPane gameRoot = new StackPane(canvas);
         Scene gameScene = new Scene(gameRoot, gameRenderer.getBackgroundWidth(), gameRenderer.getBackgroundHeight());
 
         MainMenu mainMenu = new MainMenu(gameScene, stage, gameWorld);
         PauseMenu pauseMenu = new PauseMenu(gameRoot, gameWorld, mainMenu);
+        HowToPlay howToPlay = new HowToPlay(stage, gameWorld);
 
         WinScreen winScreen = new WinScreen(stage, gameWorld, mainMenu.getMainMenuScene());
+        // TODO: WHY IS WIN SCREEN SWITCHING TO PLAYING ON ITS OWN
 
         gameScene.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             controller.handleKeyPressed(event);
@@ -69,14 +78,15 @@ public class FlowerBoy extends Application {
         lastCheck = System.nanoTime();
         AnimationTimer timer = new AnimationTimer() { // generated game loop
             private long lastUpdate = 0;
-
             @Override
             public void handle(long now) {
-                if(gameWorld.getGameState() == GameState.WIN) {
-                    if(stage.getScene() != winScreen.getWinScreen()) {
-                        winScreen.showWinScreen();
-                    }
+                switch (gameWorld.getGameState()) {
+                    case WIN -> winScreen.showWinScreen();
+                    case MAIN_MENU -> mainMenu.showMainMenu();
+                    case HOW_TO_PLAY -> howToPlay.showHowToPlay();
+                    case PLAYING -> stage.setScene(gameScene);
                 }
+
                 if (now - lastCheck >= SECOND) {
                     fps = fpsCount;
                     ups = upsCount;
@@ -84,9 +94,20 @@ public class FlowerBoy extends Application {
                     upsCount = 0;
                     lastCheck = now;
 //                    System.out.println("FPS: " + fps + " | UPS: " + ups + " | isMainMenuScene: " +  (stage.getScene() == mainMenu.getMainMenuScene()));
+                    Scene currentScene = stage.getScene();
+                    if(currentScene == gameScene) {
+                        LOGGER.info("Game Scene");
+                    }
+                    else if(currentScene == mainMenu.getMainMenuScene()) {
+                        LOGGER.info("Main Menu Scene");
+                    }
+                    else if(currentScene == howToPlay.getHowToPlayScene()) {
+                        LOGGER.info("How To Play Scene");
+                    }
+                    else if(currentScene == winScreen.getWinScreen()){
+                        LOGGER.info("Win Scene");
+                    }
                 }
-
-                // Update logiky hry (fixní časový krok)
                 if (now - lastUpdate >= SECOND / 120) { // 120 UPS
                     if(gameWorld.getGameState() != GameState.PAUSED) {
                         gameWorld.update();
@@ -96,7 +117,6 @@ public class FlowerBoy extends Application {
                     }
                 }
 
-                // Vykreslení (co nejčastěji)
                 gameRenderer.render(canvas);
                 fpsCount++;
             }

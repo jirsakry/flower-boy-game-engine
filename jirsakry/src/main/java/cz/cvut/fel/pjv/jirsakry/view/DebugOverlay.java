@@ -81,4 +81,8 @@ public class DebugOverlay { // generated
                     cactus.getHitBox().getWidth(), cactus.getHitBox().getHeight());
         }
     }
+
+    public static boolean isShowDebug() {
+        return showDebug;
+    }
 }

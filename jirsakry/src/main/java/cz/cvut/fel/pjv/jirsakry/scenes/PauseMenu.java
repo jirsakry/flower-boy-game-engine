@@ -1,4 +1,4 @@
-package cz.cvut.fel.pjv.jirsakry;
+package cz.cvut.fel.pjv.jirsakry.scenes;
 
 import cz.cvut.fel.pjv.jirsakry.model.GameState;
 import cz.cvut.fel.pjv.jirsakry.model.GameWorld;
@@ -25,13 +25,13 @@ public class PauseMenu {
         pauseRoot.setVisible(false);
 
         Button resumeButton = new Button("Resume Game");
-        resumeButton.setOnAction(e -> resumeGame());
+        resumeButton.setOnAction(e -> {
+            toggle();
+        });
 
         Button mainMenuButton = new Button("Main Menu");
         mainMenuButton.setOnAction(e -> {
             goToMainMenu();
-            gameWorld.getTimer().reset();
-            System.out.println("timer reset");
         });
 
         pauseRoot.getChildren().addAll(resumeButton, mainMenuButton);
@@ -47,20 +47,19 @@ public class PauseMenu {
     private void goToMainMenu() {
         pauseRoot.setVisible(false);
         gameRoot.setOpacity(1.0);
-        mainMenu.showMainMenu();
+        gameWorld.setGameState(GameState.MAIN_MENU);
+//        mainMenu.showMainMenu();
     }
 
     public void toggle() {
         if (gameWorld.getGameState() == GameState.PAUSED) {
             resumeGame();
             gameWorld.getTimer().start();
-            System.out.println("timer resumed");
         } else if (gameWorld.getGameState() == GameState.PLAYING) {
             gameWorld.setGameState(GameState.PAUSED);
             pauseRoot.setVisible(true);
             gameRoot.setOpacity(0.7);
             gameWorld.getTimer().stop();
-            System.out.println("timer paused");
         }
     }
 }

@@ -6,5 +6,4 @@ public class Flower extends Item {
         super(x, y, width, height);
     }
 
-
 }

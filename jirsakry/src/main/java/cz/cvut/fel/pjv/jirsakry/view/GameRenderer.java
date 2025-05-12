@@ -26,7 +26,7 @@ public class GameRenderer {
         animManager = new AnimManager(images);
     }
 
-    public Canvas createCanvas(){
+    public Canvas createCanvas() {
         backgroundWidth = images.get(ImageID.BACKGROUND).getWidth();
         backgroundHeight = images.get(ImageID.BACKGROUND).getHeight();
         return new Canvas(backgroundWidth, backgroundHeight);
@@ -37,7 +37,7 @@ public class GameRenderer {
         gc.drawImage(images.get(ImageID.BACKGROUND), 0, 0);
     }
 
-    public void render(Canvas canvas){
+    public void render(Canvas canvas) {
         gc = canvas.getGraphicsContext2D();
         clearCanvas(canvas);
         gc.setFont(new Font("Constantia", 30));
@@ -49,18 +49,18 @@ public class GameRenderer {
         DebugOverlay.draw(gc, gameWorld);
     }
 
-    private void renderLevel(){
-        for (Platform platform : gameWorld.getLevel0().getPlatforms()){ // platforms
+    private void renderLevel() {
+        for (Platform platform : gameWorld.getLevel0().getPlatforms()) { // platforms
             gc.drawImage(images.get(ImageID.GRASS), platform.getX(), platform.getY());
         }
 
-        for(Flower flower : gameWorld.getLevel0().getFlowers()){ // flowers
-            if(!(flower.isCollected())) {
+        for (Flower flower : gameWorld.getLevel0().getFlowers()) { // flowers
+            if (!(flower.isCollected())) {
                 gc.drawImage(images.get(ImageID.FLOWER), flower.getX(), flower.getY());
             }
         }
 
-        for(Cactus cactus : gameWorld.getLevel0().getCacti()){
+        for (Cactus cactus : gameWorld.getLevel0().getCacti()) {
             gc.drawImage(images.get(ImageID.CACTUS), cactus.getX(), cactus.getY());
         }
     }
@@ -71,11 +71,11 @@ public class GameRenderer {
         int invertedImageOffset;
         if (facingRight) { // centering the inverted animations
             invertedImageOffset = 0;
-        }else{
+        } else {
             invertedImageOffset = 4;
         }
 
-        if(gameWorld.getPlayer().getPlayerState() == PlayerState.DEATH) { // death
+        if (gameWorld.getPlayer().getPlayerState() == PlayerState.DEATH) { // death
             animManager.updateAnimationTick(animManager.getDeathLength());
             gc.drawImage(
                     facingRight ? animManager.getDeathAnim()[animManager.getAnimFrame()]
@@ -85,13 +85,13 @@ public class GameRenderer {
             if (animManager.getAnimFrame() == animManager.getDeathAnim().length - 1) {
                 gameWorld.newGame();
             }
-        } else if(gameWorld.getPlayer().isInAir()) { // jumping
+        } else if (gameWorld.getPlayer().isInAir()) { // jumping
             animManager.updateAnimationTick(animManager.getJumpLength());
             if (gameWorld.getPlayer().getVelocityY() < 1) { // jumping up
                 if (animManager.getAnimFrame() < animManager.getJumpUpAnim().length) {
                     gc.drawImage(
                             facingRight ? animManager.getJumpUpAnim()[animManager.getAnimFrame()]
-                                        : animManager.getJumpUpAnimMirrored()[animManager.getAnimFrame()],
+                                    : animManager.getJumpUpAnimMirrored()[animManager.getAnimFrame()],
                             gameWorld.getPlayer().getX() - invertedImageOffset, gameWorld.getPlayer().getY()
                     );
                 }
@@ -99,18 +99,18 @@ public class GameRenderer {
                 if (animManager.getAnimFrame() < animManager.getJumpDownAnim().length) {
                     gc.drawImage(
                             facingRight ? animManager.getJumpDownAnim()[animManager.getAnimFrame()]
-                                        : animManager.getJumpDownAnimMirrored()[animManager.getAnimFrame()],
+                                    : animManager.getJumpDownAnimMirrored()[animManager.getAnimFrame()],
                             gameWorld.getPlayer().getX() - invertedImageOffset, gameWorld.getPlayer().getY()
                     );
                 }
             }
         } else {
-            if(gameWorld.getPlayer().isMoving()) { // running
+            if (gameWorld.getPlayer().isMoving()) { // running
                 animManager.updateAnimationTick(animManager.getRunLength());
                 if (animManager.getAnimFrame() < animManager.getRunAnim().length) {
                     gc.drawImage(
                             facingRight ? animManager.getRunAnim()[animManager.getAnimFrame()]
-                                        : animManager.getRunAnimMirrored()[animManager.getAnimFrame()],
+                                    : animManager.getRunAnimMirrored()[animManager.getAnimFrame()],
                             gameWorld.getPlayer().getX() - invertedImageOffset, gameWorld.getPlayer().getY()
                     );
                 }
@@ -119,7 +119,7 @@ public class GameRenderer {
                 if (animManager.getAnimFrame() < animManager.getIdleAnim().length) {
                     gc.drawImage(
                             facingRight ? animManager.getIdleAnim()[animManager.getAnimFrame()]
-                                        : animManager.getIdleAnimMirrored()[animManager.getAnimFrame()],
+                                    : animManager.getIdleAnimMirrored()[animManager.getAnimFrame()],
                             gameWorld.getPlayer().getX() - invertedImageOffset, gameWorld.getPlayer().getY()
                     );
                 }
@@ -133,7 +133,7 @@ public class GameRenderer {
     }
 
     public void loadImages() {
-        for  (ImageID imageID : ImageID.values()) {
+        for (ImageID imageID : ImageID.values()) {
             Image image = null;
             try {
                 image = new Image(new FileInputStream("src/main/resources/" + imageID.getFileName()));
