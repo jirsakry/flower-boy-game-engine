@@ -21,9 +21,10 @@ public class Level {
         this.platforms = new ArrayList<>();
         this.flowers = new ArrayList<>();
         this.cacti = new ArrayList<>();
+        load(levelData);
     }
 
-    public void load(int[][] levelData) {
+    private void load(int[][] levelData) {
         for (int row = 0; row < ROWS; row++){
             for(int col = 0; col < COLS; col++){
                 int tileValue = levelData[row][col];

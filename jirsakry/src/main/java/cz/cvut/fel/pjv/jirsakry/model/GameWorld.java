@@ -16,46 +16,27 @@ public class GameWorld{
     private Level currentLevel;
     private Level level0;
 
-    private double playerSpeed = 1.7;
-    private int playerMaxHealth = 2;
-    private int playerCurrentHealth = 1;
     private int playerFlowerCount = 0;
-
-    //jump and gravity
-    private double playerJumpStrength = -11.7;
-    private double gravity = 0.6;
 
     private Player player;
 
+    private GameConfig config;
 
     // timer
     Timer timer = new Timer();
 
-    public static int[][] levelData = {
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0},
-            {1,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,0,1,0,1,0,0,0,0,1,1,1,0,0,0,0,3,0,0,0},
-            {0,0,0,0,1,0,0,4,0,0,0,0,0,1,1,0,0,0,0,0},
-            {0,0,0,0,0,0,1,1,0,0,3,0,0,0,0,0,0,0,0,0},
-            {0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,4,0,0,0},
-            {0,0,4,0,0,0,0,0,1,0,0,0,0,0,0,0,1,1,0,0},
-            {0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,3,0},
-            {1,1,1,1,1,1,1,1,5,1,1,1,1,1,1,1,1,1,1,1}
-    };
-
     public void init(){
-        level0 = new Level(levelData);
-        level0.load(levelData);
+        config = ConfigManager.loadConfig();
 
-        gameState = GameState.MAIN_MENU;
-
+        level0 = new Level(config.getLevelData());
         currentLevel = level0;
 
+
         player = new Player(40, 600, 64, 64,
-                playerSpeed, playerMaxHealth, playerCurrentHealth, playerJumpStrength, gravity, currentLevel);
+                config.getPlayerSpeed(), config.getPlayerMaxHealth(), config.getPlayerMaxHealth(),
+                config.getPlayerJumpStrength(), config.getGravity(), currentLevel);
+
+        gameState = GameState.MAIN_MENU;
         newGame();
     }
 
@@ -82,12 +63,8 @@ public class GameWorld{
         && gameState != GameState.WIN) {
             gameState = GameState.WIN;
             timer.stop();
-            System.out.println("timer stopped");
             System.out.println("Your time: " + timer.getFormattedTime());
         }
-//        if(player.getPlayerState() == PlayerState.DEATH){
-//            newGame();
-//        }
 
         player.update();
         checkCollisions();

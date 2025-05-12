@@ -7,7 +7,7 @@ import static cz.cvut.fel.pjv.jirsakry.model.HelpMethods.*;
 public class Player extends GameObject {
     private PlayerState playerState = PlayerState.FACING_RIGHT;
     private double speed;
-    private int maxHealth;
+    private final int maxHealth;
     private int currentHealth;
     private boolean moving = false;
 
@@ -15,12 +15,11 @@ public class Player extends GameObject {
     private boolean jump = false;
     private boolean doubleJumpReady = true;
     private boolean inAir = false;
-    private double jumpStrength;
-    private double gravity;
+    private final double jumpStrength;
+    private final double gravity;
     private double velocityX = 0;
     private double velocityY = 0;
     private double maxJumpHeight = 30;
-    private double maxFallSpeed = 1.5;
 
     private final Level currentLevel;
 
@@ -133,12 +132,10 @@ public class Player extends GameObject {
             jump = true;
             doubleJumpReady = true;
             velocityY = jumpStrength;
-            System.out.println("hop");
         }
         else if(doubleJumpReady && !jump) {
             velocityY = jumpStrength;
             doubleJumpReady = false;
-            System.out.println("hop2");
         }
     }
 

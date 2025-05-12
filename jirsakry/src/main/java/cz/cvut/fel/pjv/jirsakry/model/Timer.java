@@ -1,13 +1,18 @@
 package cz.cvut.fel.pjv.jirsakry.model;
 
+import cz.cvut.fel.pjv.jirsakry.view.DebugOverlay;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
+
+import java.util.logging.Logger;
 
 public class Timer {
     private long elapsedMillis;
     private final Timeline timeline;
     private boolean isRunning;
+
+    private static final Logger LOGGER = Logger.getLogger(Timer.class.getName());
 
     public Timer() {
         this.elapsedMillis = 0;
@@ -24,16 +29,25 @@ public class Timer {
     public void start() {
         isRunning = true;
         timeline.play();
+        if(DebugOverlay.isShowDebug()){
+            LOGGER.info("Timer started");
+        }
     }
 
     public void stop() {
         isRunning = false;
         timeline.stop();
+        if(DebugOverlay.isShowDebug()){
+            LOGGER.info("Timer stopped");
+        }
     }
 
     public void reset(){
         stop();
         elapsedMillis = 0;
+        if(DebugOverlay.isShowDebug()){
+            LOGGER.info("Timer reset");
+        }
     }
 
     public String getFormattedTime() {
