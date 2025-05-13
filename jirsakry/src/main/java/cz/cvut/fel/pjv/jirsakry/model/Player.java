@@ -176,4 +176,16 @@ public class Player extends GameObject {
     public void setPlayerState(PlayerState playerState) {
         this.playerState = playerState;
     }
+    public String getPlayerInfo() {
+            return "Player[x=" + x +
+                    ", y=" + y +
+                    ", velocityX=" + velocityX +
+                    ", velocityY=" + velocityY +
+                    ", health=" + currentHealth + "/" + maxHealth +
+                    ", state=" + playerState +
+                    ", inAir=" + inAir +
+                    ", doubleJumpReady=" + doubleJumpReady +
+                    ", jump=" + jump +
+                    "]";
+        }
 }

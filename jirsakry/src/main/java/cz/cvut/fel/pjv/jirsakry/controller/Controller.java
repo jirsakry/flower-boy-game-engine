@@ -71,4 +71,8 @@ public class Controller {
             gameWorld.jump();
         }
     }
+
+    public void activeKeysClear() { // TODO: Key can stuck in active buffer
+        activeKeys.clear();
+    }
 }

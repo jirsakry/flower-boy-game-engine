@@ -56,7 +56,7 @@ public class FlowerBoy extends Application {
         PauseMenu pauseMenu = new PauseMenu(gameRoot, gameWorld, mainMenu);
         HowToPlay howToPlay = new HowToPlay(stage, gameWorld);
 
-        WinScreen winScreen = new WinScreen(stage, gameWorld, mainMenu.getMainMenuScene());
+        WinScreen winScreen = new WinScreen(stage, gameWorld, mainMenu);
         // TODO: WHY IS WIN SCREEN SWITCHING TO PLAYING ON ITS OWN
 
         gameScene.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
@@ -81,10 +81,17 @@ public class FlowerBoy extends Application {
             @Override
             public void handle(long now) {
                 switch (gameWorld.getGameState()) {
-                    case WIN -> winScreen.showWinScreen();
-                    case MAIN_MENU -> mainMenu.showMainMenu();
+                    case WIN -> {
+                        winScreen.showWinScreen();
+                        winScreen.updateNextLevelButton();
+                    }
+                    case MAIN_MENU -> {
+                        mainMenu.showMainMenu();
+                    }
                     case HOW_TO_PLAY -> howToPlay.showHowToPlay();
-                    case PLAYING -> stage.setScene(gameScene);
+                    case PLAYING -> {
+                        stage.setScene(gameScene);
+                    }
                 }
 
                 if (now - lastCheck >= SECOND) {
@@ -93,20 +100,20 @@ public class FlowerBoy extends Application {
                     fpsCount = 0;
                     upsCount = 0;
                     lastCheck = now;
-//                    System.out.println("FPS: " + fps + " | UPS: " + ups + " | isMainMenuScene: " +  (stage.getScene() == mainMenu.getMainMenuScene()));
-                    Scene currentScene = stage.getScene();
-                    if(currentScene == gameScene) {
-                        LOGGER.info("Game Scene");
-                    }
-                    else if(currentScene == mainMenu.getMainMenuScene()) {
-                        LOGGER.info("Main Menu Scene");
-                    }
-                    else if(currentScene == howToPlay.getHowToPlayScene()) {
-                        LOGGER.info("How To Play Scene");
-                    }
-                    else if(currentScene == winScreen.getWinScreen()){
-                        LOGGER.info("Win Scene");
-                    }
+//                    System.out.println("FPS: " + fps + " | UPS: " + ups);
+//                    Scene currentScene = stage.getScene();
+//                    if(currentScene == gameScene) {
+//                        LOGGER.info("Game Scene");
+//                    }
+//                    else if(currentScene == mainMenu.getMainMenuScene()) {
+//                        LOGGER.info("Main Menu Scene");
+//                    }
+//                    else if(currentScene == howToPlay.getHowToPlayScene()) {
+//                        LOGGER.info("How To Play Scene");
+//                    }
+//                    else if(currentScene == winScreen.getWinScreen()){
+//                        LOGGER.info("Win Scene");
+//                    }
                 }
                 if (now - lastUpdate >= SECOND / 120) { // 120 UPS
                     if(gameWorld.getGameState() != GameState.PAUSED) {

@@ -71,12 +71,12 @@ public class DebugOverlay { // generated
         gc.strokeRect(playerHitBox.getMinX(), playerHitBox.getMinY(),
                 playerHitBox.getWidth(), playerHitBox.getHeight());
 
-        for(Flower flower : gameWorld.getLevel0().getFlowers()){
+        for(Flower flower : gameWorld.getCurrentLevel().getFlowers()){
             gc.strokeRect(flower.getHitBox().getMinX(), flower.getHitBox().getMinY(),
                     flower.getHitBox().getWidth(), flower.getHitBox().getHeight());
         }
 
-        for(Cactus cactus : gameWorld.getLevel0().getCacti()){
+        for(Cactus cactus : gameWorld.getCurrentLevel().getCacti()){
             gc.strokeRect(cactus.getHitBox().getMinX(), cactus.getHitBox().getMinY(),
                     cactus.getHitBox().getWidth(), cactus.getHitBox().getHeight());
         }

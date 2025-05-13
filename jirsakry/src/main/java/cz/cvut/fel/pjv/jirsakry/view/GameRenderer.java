@@ -50,17 +50,17 @@ public class GameRenderer {
     }
 
     private void renderLevel() {
-        for (Platform platform : gameWorld.getLevel0().getPlatforms()) { // platforms
+        for (Platform platform : gameWorld.getCurrentLevel().getPlatforms()) { // platforms
             gc.drawImage(images.get(ImageID.GRASS), platform.getX(), platform.getY());
         }
 
-        for (Flower flower : gameWorld.getLevel0().getFlowers()) { // flowers
+        for (Flower flower : gameWorld.getCurrentLevel().getFlowers()) { // flowers
             if (!(flower.isCollected())) {
                 gc.drawImage(images.get(ImageID.FLOWER), flower.getX(), flower.getY());
             }
         }
 
-        for (Cactus cactus : gameWorld.getLevel0().getCacti()) {
+        for (Cactus cactus : gameWorld.getCurrentLevel().getCacti()) {
             gc.drawImage(images.get(ImageID.CACTUS), cactus.getX(), cactus.getY());
         }
     }

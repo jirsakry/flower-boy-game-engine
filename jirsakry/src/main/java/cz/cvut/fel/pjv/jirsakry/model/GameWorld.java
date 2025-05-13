@@ -2,6 +2,7 @@ package cz.cvut.fel.pjv.jirsakry.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class GameWorld{
     public static double SCREEN_WIDTH = 1280;
@@ -11,44 +12,64 @@ public class GameWorld{
     public static int COLS = 20;
     public static int ROWS = 12;
 
+    private static final Logger LOGGER = Logger.getLogger(GameWorld.class.getName());
+
     private GameState gameState;
 
-    private Level currentLevel;
-    private Level level0;
+    private GameConfig config;
 
-    private int playerFlowerCount = 0;
+    private List <int[][]> levelMaps;
+    private Level currentLevel;
+    private int currentLevelIndex = 0;
+
+    private List<Level> levels;
+    private Level level0;
+    private Level level1;
 
     private Player player;
 
-    private GameConfig config;
+    private int playerFlowerCount;
+
 
     // timer
     Timer timer = new Timer();
 
     public void init(){
         config = ConfigManager.loadConfig();
+        levels = new ArrayList<>();
+        levelMaps = config.getLevels();
 
-        level0 = new Level(config.getLevelData());
+        level0 = new Level(levelMaps.get(0));
+        levels.add(level0);
+        level1 = new Level(levelMaps.get(1));
+        levels.add(level1);
         currentLevel = level0;
-
+        currentLevelIndex = 0;
 
         player = new Player(40, 600, 64, 64,
                 config.getPlayerSpeed(), config.getPlayerMaxHealth(), config.getPlayerMaxHealth(),
                 config.getPlayerJumpStrength(), config.getGravity(), currentLevel);
 
-        gameState = GameState.MAIN_MENU;
         newGame();
     }
 
     public void newGame() {
+        LOGGER.info(player.getPlayerInfo());
+        LOGGER.info("currentLevelIndex: " + currentLevelIndex);
+
+        player = new Player(40, 600, 64, 64, // TODO: Maybe more elegant way?
+                config.getPlayerSpeed(), config.getPlayerMaxHealth(), config.getPlayerMaxHealth(),
+                config.getPlayerJumpStrength(), config.getGravity(), currentLevel);
         player.reset();
+        LOGGER.info(player.getPlayerInfo());
 
         playerFlowerCount = 0;
-        for(Flower flower: level0.getFlowers()){
+        for(Flower flower: currentLevel.getFlowers()){
             flower.setCollected(false);
         }
 
         timer.reset();
+
         if(gameState == GameState.MAIN_MENU){
             timer.stop();
         }
@@ -59,11 +80,18 @@ public class GameWorld{
     }
 
     public void update(){
-        if(playerFlowerCount == level0.getFlowerCount()
+        if(playerFlowerCount == currentLevel.getFlowerCount()
         && gameState != GameState.WIN) {
+            LOGGER.info(player.getPlayerInfo());
             gameState = GameState.WIN;
             timer.stop();
-            System.out.println("Your time: " + timer.getFormattedTime());
+            currentLevelIndex++;
+            if (currentLevelIndex < (levelMaps.size())) {
+                currentLevel = levels.get(currentLevelIndex);
+            }
+        }
+        if(currentLevelIndex < (levelMaps.size())) {
+            currentLevel = levels.get(currentLevelIndex);
         }
 
         player.update();
@@ -76,7 +104,7 @@ public class GameWorld{
     }
 
     private void checkFlowerPickUp() {
-        for (Flower flower : level0.getFlowers()) {
+        for (Flower flower : currentLevel.getFlowers()) {
             if(!(flower.isCollected())) {
                 if (flower.getHitBox().intersects(player.getHitBox())) {
                     flower.setCollected(true);
@@ -87,9 +115,10 @@ public class GameWorld{
     }
 
     private void checkCactusHit() {
-        for (Cactus cactus : level0.getCacti()){
+        for (Cactus cactus : currentLevel.getCacti()){
             if(cactus.getHitBox().intersects(player.getHitBox())) {
                 player.setPlayerState(PlayerState.DEATH);
+
             }
         }
     }
@@ -119,8 +148,20 @@ public class GameWorld{
         return playerFlowerCount;
     }
 
-    public Level getLevel0() {
-        return level0;
+    public Level getCurrentLevel() {
+        return currentLevel;
+    }
+
+    public int getCurrentLevelIndex() {
+        return currentLevelIndex;
+    }
+
+    public void setCurrentLevelIndex(int currentLevelIndex) {
+        this.currentLevelIndex = currentLevelIndex;
+    }
+
+    public List<Level> getLevels() {
+        return levels;
     }
 
     public GameState getGameState() {
