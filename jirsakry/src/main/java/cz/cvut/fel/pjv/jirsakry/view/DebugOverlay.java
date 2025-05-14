@@ -9,10 +9,24 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-public class DebugOverlay { // generated
+/**
+ * Utility class for rendering debug overlay and hitboxes in the game.
+ */
+// WHILE DEBUG PLAYER CAN USE UP AND DOWN KEYS FOR LEVITATION
+public class DebugOverlay { // generated and edited
     private static final Font DEBUG_FONT = Font.font("Arial", 16);
     private static boolean showDebug = false;
 
+    public static void toggleDebug() {
+        showDebug = !showDebug;
+    }
+
+    /**
+     * Draws the debug overlay on the given GraphicsContext if debug mode is enabled.
+     *
+     * @param gc        the GraphicsContext to draw on
+     * @param gameWorld game world instance
+     */
     public static void draw(GraphicsContext gc, GameWorld gameWorld) {
         if (!showDebug) return;
 
@@ -54,10 +68,6 @@ public class DebugOverlay { // generated
         gc.setFont(originalFont);
         gc.setFill(originalFill);
 
-    }
-
-    public static void toggleDebug() {
-        showDebug = !showDebug;
     }
 
     private static void renderHitBoxes(GraphicsContext gc, GameWorld gameWorld) {

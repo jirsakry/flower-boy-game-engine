@@ -6,8 +6,5 @@ public class Platform extends GameObject {
         super(x, y, width, height);
     }
 
-    @Override
-    public void update() {
 
-    }
 }

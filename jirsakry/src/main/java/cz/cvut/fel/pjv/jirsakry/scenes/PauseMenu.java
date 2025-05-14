@@ -7,17 +7,23 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-
+/**
+ * Represents the PauseMenu overlay for pausing and resuming the game.
+ */
 public class PauseMenu {
     private final VBox pauseRoot;
     private final StackPane gameRoot;
     private final GameWorld gameWorld;
-    private final MainMenu mainMenu;
 
-    public PauseMenu(StackPane gameRoot, GameWorld gameWorld, MainMenu mainMenu) {
+    /**
+     * Creates the PauseMenu overlay for pausing and resuming the game.
+     *
+     * @param gameRoot The root StackPane of the game scene.
+     * @param gameWorld The game world instance to manage game state.
+     */
+    public PauseMenu(StackPane gameRoot, GameWorld gameWorld) {
         this.gameRoot = gameRoot;
         this.gameWorld = gameWorld;
-        this.mainMenu = mainMenu;
 
         pauseRoot = new VBox();
         pauseRoot.setSpacing(10);
@@ -48,9 +54,11 @@ public class PauseMenu {
         pauseRoot.setVisible(false);
         gameRoot.setOpacity(1.0);
         gameWorld.setGameState(GameState.MAIN_MENU);
-//        mainMenu.showMainMenu();
     }
 
+    /**
+     * Toggles the pause menu visibility and game state.
+     */
     public void toggle() {
         if (gameWorld.getGameState() == GameState.PAUSED) {
             resumeGame();

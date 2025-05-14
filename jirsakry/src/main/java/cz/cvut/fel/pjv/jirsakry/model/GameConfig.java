@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameConfig {
-
     private double playerSpeed;
     private double playerJumpStrength;
     private double gravity;
@@ -14,6 +13,11 @@ public class GameConfig {
     public GameConfig() {
     }
 
+    /**
+     * Creates and returns the default game configuration including predefined levels.
+     *
+     * @return instance of the default game config.
+     */
     public static GameConfig getDefaultConfig(){
         GameConfig defaultConfig = new GameConfig();
         defaultConfig.playerSpeed = 1.7;
@@ -23,7 +27,7 @@ public class GameConfig {
         defaultConfig.levels = List.of(
                 new int[][]{
                         {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-                        {0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,3,0,0,0,0},
+                        {0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0},
                         {0,0,4,0,0,0,0,0,0,0,1,1,1,0,0,1,1,0,0,0},
                         {0,0,1,1,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0},
                         {0,0,0,0,0,1,1,1,1,0,0,0,0,0,4,0,0,0,0,0},

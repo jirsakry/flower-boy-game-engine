@@ -11,6 +11,9 @@ import java.io.FileNotFoundException;
 import java.util.EnumMap;
 import java.util.Map;
 
+/**
+ * Handles rendering of game scene.
+ */
 public class GameRenderer {
     private final AnimManager animManager;
     private final GameWorld gameWorld;
@@ -19,24 +22,33 @@ public class GameRenderer {
     private double backgroundWidth;
     private double backgroundHeight;
 
-
+    /**
+     * Creates a GameRenderer for the game world.
+     *
+     * @param gameWorld The game world to render.
+     */
     public GameRenderer(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
         images = new EnumMap<>(ImageID.class);
         animManager = new AnimManager(images);
     }
 
+    /**
+     * Creates a new Canvas sized to the background image.
+     *
+     * @return The created Canvas.
+     */
     public Canvas createCanvas() {
         backgroundWidth = images.get(ImageID.BACKGROUND).getWidth();
         backgroundHeight = images.get(ImageID.BACKGROUND).getHeight();
         return new Canvas(backgroundWidth, backgroundHeight);
     }
 
-    public void drawBackground(Canvas canvas) {
-        gc = canvas.getGraphicsContext2D();
-        gc.drawImage(images.get(ImageID.BACKGROUND), 0, 0);
-    }
-
+    /**
+     * Renders the entire game scene onto the given canvas.
+     *
+     * @param canvas The canvas to render the game on.
+     */
     public void render(Canvas canvas) {
         gc = canvas.getGraphicsContext2D();
         clearCanvas(canvas);
@@ -61,17 +73,15 @@ public class GameRenderer {
         }
 
         for (Cactus cactus : gameWorld.getCurrentLevel().getCacti()) { // cacti
-            if(!(cactus.isDestroyed())){
+            if (!(cactus.isDestroyed())) {
                 gc.drawImage(images.get(ImageID.CACTUS), cactus.getX(), cactus.getY());
-            }
-            else {
+            } else {
                 gc.drawImage(images.get(ImageID.CACTUS_DESTROYED), cactus.getX(), cactus.getY());
             }
-
         }
 
         for (Shield shield : gameWorld.getCurrentLevel().getShields()) { // shields
-            if(!(shield.isCollected())) {
+            if (!(shield.isCollected())) {
                 gc.drawImage(images.get(ImageID.SHIELD), shield.getX(), shield.getY());
             }
         }
@@ -80,8 +90,8 @@ public class GameRenderer {
     private void renderCharacter() {
         boolean facingRight = gameWorld.getPlayer().getPlayerState() == PlayerState.FACING_RIGHT;
 
-        if(gameWorld.getPlayer().isHoldingShield()){
-           gc.drawImage(images.get(ImageID.SHIELD), gameWorld.getPlayer().getX() - 3, gameWorld.getPlayer().getY() - 2);
+        if (gameWorld.getPlayer().isHoldingShield()) {
+            gc.drawImage(images.get(ImageID.SHIELD), gameWorld.getPlayer().getX() - 3, gameWorld.getPlayer().getY() - 2);
         }
 
         int invertedImageOffset;
@@ -91,7 +101,7 @@ public class GameRenderer {
             invertedImageOffset = 4;
         }
 
-        if (gameWorld.getPlayer().getPlayerState() == PlayerState.DEATH) { // death // TODO: TEAR APART
+        if (gameWorld.getPlayer().getPlayerState() == PlayerState.DEATH) { // death
             animManager.updateAnimationTick(animManager.getDeathLength());
             renderCharacterDeath(facingRight, invertedImageOffset);
         } else if (gameWorld.getPlayer().isInAir()) { // jumping
@@ -159,11 +169,19 @@ public class GameRenderer {
         }
     }
 
+    /**
+     * Clears the entire canvas.
+     *
+     * @param canvas The canvas to clear.
+     */
     public void clearCanvas(Canvas canvas) {
         gc = canvas.getGraphicsContext2D();
         gc.clearRect(0, 0, backgroundWidth, backgroundHeight);
     }
 
+    /**
+     * Loads all images required for rendering.
+     */
     public void loadImages() {
         for (ImageID imageID : ImageID.values()) {
             Image image = null;
@@ -178,16 +196,28 @@ public class GameRenderer {
         }
     }
 
+    /**
+     * Loads all character animations.
+     */
     public void loadAnimations() {
         animManager.loadAnimations();
     }
 
+    /**
+     * Gets the width of the background image.
+     *
+     * @return The background width.
+     */
     public double getBackgroundWidth() {
         return backgroundWidth;
     }
 
+    /**
+     * Gets the height of the background image.
+     *
+     * @return The background height.
+     */
     public double getBackgroundHeight() {
         return backgroundHeight;
     }
-
 }

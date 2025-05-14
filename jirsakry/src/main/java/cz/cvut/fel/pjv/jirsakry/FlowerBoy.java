@@ -48,7 +48,7 @@ public class FlowerBoy extends Application {
         Scene gameScene = new Scene(gameRoot, gameRenderer.getBackgroundWidth(), gameRenderer.getBackgroundHeight());
 
         MainMenu mainMenu = new MainMenu(gameScene, stage, gameWorld);
-        PauseMenu pauseMenu = new PauseMenu(gameRoot, gameWorld, mainMenu);
+        PauseMenu pauseMenu = new PauseMenu(gameRoot, gameWorld);
         HowToPlay howToPlay = new HowToPlay(stage, gameWorld);
         WinScreen winScreen = new WinScreen(stage, gameWorld, mainMenu);
 

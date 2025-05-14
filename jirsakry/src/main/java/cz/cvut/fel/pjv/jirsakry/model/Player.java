@@ -5,25 +5,22 @@ import javafx.geometry.BoundingBox;
 import static cz.cvut.fel.pjv.jirsakry.model.HelpMethods.*;
 
 public class Player extends GameObject {
-    private PlayerState playerState = PlayerState.FACING_RIGHT;
-    private double speed;
     private final int maxHealth;
+    private final double jumpStrength;
+    private final double gravity;
+    private final Level currentLevel;
+    private PlayerState playerState = PlayerState.FACING_RIGHT;
+    private final double speed;
     private int currentHealth;
     private boolean moving = false;
-
     private boolean holdingShield = false;
-
     //jump and gravity
     private boolean doubleJumpReady = true;
     private boolean inAir = false;
-    private final double jumpStrength;
-    private final double gravity;
     private double velocityX = 0;
     private double velocityY = 0;
 
-    private final Level currentLevel;
-
-    public Player(double x, double y, double width, double height, double speed, int maxHealth, int  currentHealth,
+    public Player(double x, double y, double width, double height, double speed, int maxHealth, int currentHealth,
                   double jumpStrength, double gravity, Level currentLevel) {
         super(x, y, width, height);
         this.speed = speed;
@@ -34,74 +31,74 @@ public class Player extends GameObject {
         this.currentLevel = currentLevel;
     }
 
+    /**
+     * Updates movement and state of player.
+     */
     @Override
-    public void update(){
+    public void update() {
         moving = velocityX != 0; // is moving
         checkPlayerState();
 
-        if(!inAir){
-            if(!(IsEntityOnFloor(getHitBox(), currentLevel.getLevelData()))){
+        if (!inAir) {
+            if (!(IsEntityOnFloor(getHitBox(), currentLevel.getLevelData()))) {
                 inAir = true;
             }
         }
 
-        if(inAir){
-            if(CanMoveHere(getHitBox().getMinX(), getHitBox().getMinY() + velocityY, this, currentLevel.getLevelData())){
+        if (inAir) {
+            if (CanMoveHere(getHitBox().getMinX(), getHitBox().getMinY() + velocityY, this, currentLevel.getLevelData())) {
                 y += velocityY;
                 velocityY += gravity;
                 updateHorizontalMove();
-            }
-            else{
-                hitBox = new BoundingBox (x, GetYPosAboveUnder(getHitBox(), velocityY), width, height);
-                if (velocityY > 0){
+            } else {
+                hitBox = new BoundingBox(x, GetYPosAboveUnder(getHitBox(), velocityY), width, height);
+                if (velocityY > 0) {
                     resetInAir();
-                }
-                else{
+                } else {
                     velocityY = 0;
                 }
                 updateHorizontalMove();
             }
-        }
-        else{
+        } else {
             updateHorizontalMove();
         }
         velocityX = 0;
     }
 
     private void checkPlayerState() {
-        if(currentHealth == 0){
+        if (currentHealth == 0) {
             playerState = PlayerState.DEATH;
         }
-        if(playerState == PlayerState.DEATH){
+        if (playerState == PlayerState.DEATH) {
             velocityX = 0;
             velocityY = 0;
-        }
-        else if (velocityX > 0){
+        } else if (velocityX > 0) {
             playerState = PlayerState.FACING_RIGHT;
-        }
-        else if (velocityX < 0){
+        } else if (velocityX < 0) {
             playerState = PlayerState.FACING_LEFT;
         }
 
     }
 
-    private void resetInAir(){
+    private void resetInAir() {
         inAir = false;
         velocityY = 0;
         doubleJumpReady = true;
     }
 
     private void updateHorizontalMove() {
-        if(CanMoveHere(getHitBox().getMinX() + velocityX, getHitBox().getMinY(), this, currentLevel.getLevelData())){
+        if (CanMoveHere(getHitBox().getMinX() + velocityX, getHitBox().getMinY(), this, currentLevel.getLevelData())) {
             x += velocityX;
-        }
-        else {
-            hitBox = new BoundingBox (GetXPosNextToWall(hitBox, velocityX), y, width, height);
+        } else {
+            hitBox = new BoundingBox(GetXPosNextToWall(hitBox, velocityX), y, width, height);
             moving = false;
         }
     }
 
-    public void reset(){
+    /**
+     * Resets player position, velocity, and stats
+     */
+    public void reset() {
         playerState = PlayerState.FACING_RIGHT;
         x = 40;
         y = 600;
@@ -111,34 +108,35 @@ public class Player extends GameObject {
         currentHealth = 1;
     }
 
-    public void moveRight(){
-            velocityX = speed;
+    public void moveRight() {
+        velocityX = speed;
     }
-    public void moveLeft(){
+
+    public void moveLeft() {
         velocityX = -speed;
     }
-    public void moveDown(){
+
+    public void moveDown() {
         velocityY = speed;
     }
 
-    public void moveUp(){
+    public void moveUp() {
         velocityY = -speed;
     }
 
-    public void jump(){
-        if(!inAir) {
+    public void jump() {
+        if (!inAir) {
             inAir = true;
             doubleJumpReady = true;
             velocityY = jumpStrength;
-        }
-        else if(doubleJumpReady) {
+        } else if (doubleJumpReady) {
             velocityY = jumpStrength;
             doubleJumpReady = false;
         }
     }
 
     @Override
-    public BoundingBox getHitBox(){
+    public BoundingBox getHitBox() {
         hitBox = new BoundingBox(x + 26, y + 15, width - 54, height - 16);
         return hitBox;
     }
@@ -192,14 +190,14 @@ public class Player extends GameObject {
     }
 
     public String getPlayerInfo() {
-            return "Player[x=" + x +
-                    ", y=" + y +
-                    ", velocityX=" + velocityX +
-                    ", velocityY=" + velocityY +
-                    ", health=" + currentHealth + "/" + maxHealth +
-                    ", state=" + playerState +
-                    ", inAir=" + inAir +
-                    ", doubleJumpReady=" + doubleJumpReady +
-                    "]";
-        }
+        return "Player[x=" + x +
+                ", y=" + y +
+                ", velocityX=" + velocityX +
+                ", velocityY=" + velocityY +
+                ", health=" + currentHealth + "/" + maxHealth +
+                ", state=" + playerState +
+                ", inAir=" + inAir +
+                ", doubleJumpReady=" + doubleJumpReady +
+                "]";
+    }
 }

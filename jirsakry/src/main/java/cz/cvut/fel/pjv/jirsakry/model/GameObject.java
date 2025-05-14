@@ -4,7 +4,6 @@ import javafx.geometry.BoundingBox;
 import javafx.scene.shape.Rectangle;
 
 abstract class GameObject {
-
     protected double x;
     protected double y;
 

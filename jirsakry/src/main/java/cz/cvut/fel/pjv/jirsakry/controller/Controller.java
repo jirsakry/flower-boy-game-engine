@@ -17,6 +17,11 @@ public class Controller {
         this.gameWorld = gameWorld;
     }
 
+    /**
+     * Handles key press events and updates the set of active keys or triggers actions.
+     *
+     * @param event the key event to handle
+     */
     public void handleKeyPressed(KeyEvent event) {
         if(event.getCode() == KeyCode.LEFT){
             activeKeys.add(KeyCode.LEFT);
@@ -38,6 +43,11 @@ public class Controller {
         }
     }
 
+    /**
+     * Handles key release events and updates the set of active keys.
+     *
+     * @param event the key event to handle
+     */
     public void handleKeyReleased(KeyEvent event) {
         if(event.getCode() == KeyCode.LEFT){
             activeKeys.remove(KeyCode.LEFT);
@@ -53,6 +63,9 @@ public class Controller {
         }
     }
 
+    /**
+     * Updates the active keys buffer.
+     */
     public void update() {
         if (activeKeys.contains(KeyCode.LEFT)) {
             gameWorld.moveLeft();

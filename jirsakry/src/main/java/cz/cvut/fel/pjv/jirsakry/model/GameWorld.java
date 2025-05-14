@@ -4,37 +4,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class GameWorld{
+public class GameWorld {
+    private static final Logger LOGGER = Logger.getLogger(GameWorld.class.getName());
     public static double SCREEN_WIDTH = 1280;
     public static double SCREEN_HEIGHT = 768;
-
     public static int TILE_SIZE = 64;
     public static int COLS = 20;
     public static int ROWS = 12;
-
-    private static final Logger LOGGER = Logger.getLogger(GameWorld.class.getName());
-
+    // timer
+    Timer timer = new Timer();
     private GameState gameState;
-
     private GameConfig config;
-
-    private List <int[][]> levelMaps;
+    private List<int[][]> levelMaps;
     private Level currentLevel;
     private int currentLevelIndex = 0;
-
     private List<Level> levels;
     private Level level0;
     private Level level1;
-
     private Player player;
-
     private int playerFlowerCount;
 
-
-    // timer
-    Timer timer = new Timer();
-
-    public void init(){
+    /**
+     * Initializes the game world, loads configuration, levels and creates the player.
+     */
+    public void init() {
         config = ConfigManager.loadConfig();
         levels = new ArrayList<>();
         levelMaps = config.getLevels();
@@ -54,7 +47,7 @@ public class GameWorld{
     }
 
     /**
-     * Gets the model ready for game.
+     * Gets the model ready for a game.
      */
     public void newGame() {
         LOGGER.info(player.getPlayerInfo());
@@ -69,10 +62,9 @@ public class GameWorld{
         resetItems();
         timer.reset();
 
-        if(gameState == GameState.MAIN_MENU){
+        if (gameState == GameState.MAIN_MENU) {
             timer.stop();
-        }
-        else{
+        } else {
             gameState = GameState.PLAYING;
             timer.start();
         }
@@ -80,20 +72,23 @@ public class GameWorld{
 
     private void resetItems() {
         playerFlowerCount = 0;
-        for(Flower flower: currentLevel.getFlowers()){
+        for (Flower flower : currentLevel.getFlowers()) {
             flower.setCollected(false);
         }
-        for(Shield shield: currentLevel.getShields()){
+        for (Shield shield : currentLevel.getShields()) {
             shield.setCollected(false);
         }
-        for(Cactus cactus : currentLevel.getCacti()){
+        for (Cactus cactus : currentLevel.getCacti()) {
             cactus.setDestroyed(false);
         }
     }
 
-    public void update(){
-        if(playerFlowerCount == currentLevel.getFlowerCount()
-        && gameState != GameState.WIN) {
+    /**
+     * Updates the game world state, checks win conditions and collisions and updates player.
+     */
+    public void update() {
+        if (playerFlowerCount == currentLevel.getFlowerCount()
+                && gameState != GameState.WIN) {
             LOGGER.info(player.getPlayerInfo());
             gameState = GameState.WIN;
             timer.stop();
@@ -102,7 +97,7 @@ public class GameWorld{
                 currentLevel = levels.get(currentLevelIndex);
             }
         }
-        if(currentLevelIndex < (levelMaps.size())) {
+        if (currentLevelIndex < (levelMaps.size())) {
             currentLevel = levels.get(currentLevelIndex);
         }
 
@@ -110,25 +105,27 @@ public class GameWorld{
         checkCollisions();
     }
 
-    private void checkCollisions(){
+    private void checkCollisions() {
         checkFlowerPickUp();
         checkCactusHit();
         checkShieldCollect();
     }
 
     private void checkShieldCollect() {
-        for (Shield shield:  currentLevel.getShields()) {
-            if(shield.getHitBox().intersects(player.getHitBox()) &&
-                    !(player.isHoldingShield())){
-                player.setHoldingShield(true);
-                shield.setCollected(true);
+        for (Shield shield : currentLevel.getShields()) {
+            if (shield.getHitBox().intersects(player.getHitBox()) &&
+                    !(player.isHoldingShield())) {
+                if(!(shield.isCollected())) {
+                    player.setHoldingShield(true);
+                    shield.setCollected(true);
+                }
             }
         }
     }
 
     private void checkFlowerPickUp() {
         for (Flower flower : currentLevel.getFlowers()) {
-            if(!(flower.isCollected())) {
+            if (!(flower.isCollected())) {
                 if (flower.getHitBox().intersects(player.getHitBox())) {
                     flower.setCollected(true);
                     playerFlowerCount++;
@@ -138,14 +135,13 @@ public class GameWorld{
     }
 
     private void checkCactusHit() {
-        for (Cactus cactus : currentLevel.getCacti()){
-            if(cactus.getHitBox().intersects(player.getHitBox()) &&
+        for (Cactus cactus : currentLevel.getCacti()) {
+            if (cactus.getHitBox().intersects(player.getHitBox()) &&
                     !(cactus.isDestroyed())) {
-                if(player.isHoldingShield()){
+                if (player.isHoldingShield()) {
                     player.setHoldingShield(false);
                     cactus.setDestroyed(true);
-                }
-                else if(!(cactus.isDestroyed())){
+                } else if (!(cactus.isDestroyed())) {
                     player.setCurrentHealth(player.getCurrentHealth() - 1);
                 }
             }
@@ -155,15 +151,19 @@ public class GameWorld{
     public void moveRight() {
         player.moveRight();
     }
+
     public void moveLeft() {
         player.moveLeft();
     }
+
     public void moveDown() {
         player.moveDown();
     }
+
     public void moveUp() {
         player.moveUp();
     }
+
     public void jump() {
         player.jump();
     }
@@ -193,11 +193,11 @@ public class GameWorld{
         return gameState;
     }
 
-    public Timer getTimer() {
-        return timer;
-    }
-
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
+    }
+
+    public Timer getTimer() {
+        return timer;
     }
 }

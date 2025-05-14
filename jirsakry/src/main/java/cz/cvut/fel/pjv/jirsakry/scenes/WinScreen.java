@@ -12,6 +12,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+/**
+ * Represents the win screen displayed after completing a level.
+ */
 public class WinScreen {
     private final Stage stage;
     private final Scene winScreen;
@@ -21,12 +24,18 @@ public class WinScreen {
 
     private final Button nextLevelButton;
 
+    /**
+     * Creates the WinScreen scene.
+     *
+     * @param stage     The primary stage of the application.
+     * @param gameWorld The game world instance to manage game state.
+     * @param mainMenu  The main menu scene handler.
+     */
     public WinScreen(Stage stage, GameWorld gameWorld, MainMenu mainMenu) {
         this.stage = stage;
         this.gameWorld = gameWorld;
         this.mainMenu = mainMenu;
         VBox root = new VBox();
-
 
         Text winMessage = new Text("YOU COLLECTED ALL FLOWERS, GOOD JOB!");
         winMessage.setFont(new Font("Constantia", 40));
@@ -69,12 +78,19 @@ public class WinScreen {
         winScreen = new Scene(root, GameWorld.SCREEN_WIDTH, GameWorld.SCREEN_HEIGHT);
     }
 
+    /**
+     * Displays the win screen, updates the game state.
+     */
     public void showWinScreen() {
         stage.setScene(winScreen);
         gameWorld.setGameState(GameState.WIN);
         timeMessage.setText("YOU DID IT IN:" + gameWorld.getTimer().getFormattedTime());
     }
 
+    /**
+     * Updates the "Next Level" button state and text depending on whether
+     * there are more levels available.
+     */
     public void updateNextLevelButton(){
         if(gameWorld.getCurrentLevelIndex() > gameWorld.getLevels().size() - 1){
             nextLevelButton.setDisable(true);

@@ -16,6 +16,11 @@ public class Level {
 
     private int flowerCount;
 
+    /**
+     * Converts values from input matrix and creates GameObjects accordingly.
+     *
+     * @param levelData matrix of tile values
+     */
     public Level(int[][] levelData) {
         this.levelData = levelData;
 

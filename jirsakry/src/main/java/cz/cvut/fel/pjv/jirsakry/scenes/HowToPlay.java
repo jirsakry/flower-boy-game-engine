@@ -23,6 +23,13 @@ public class HowToPlay { // should have used scene builder
     private final Scene howToPlayScene;
     private final GameWorld gameWorld;
     private final Stage stage;
+
+    /**
+     * Constructs the HowToPlay scene with all the text and buttons.
+     *
+     * @param stage     The primary stage of the application.
+     * @param gameWorld The game world instance to manage game state.
+     */
     public HowToPlay(Stage stage, GameWorld gameWorld) {
         this.stage = stage;
         this.gameWorld = gameWorld;
@@ -34,7 +41,7 @@ public class HowToPlay { // should have used scene builder
         VBox rootCenter = createRootCenter();
         VBox rootRight = createRootRight();
         mainRoot.setSpacing(10);
-        mainRoot.getChildren().addAll(rootLeft, rootCenter,rootRight);
+        mainRoot.getChildren().addAll(rootLeft, rootCenter, rootRight);
 
         VBox rootLower = createLowerSection(gameWorld);
 
@@ -134,12 +141,12 @@ public class HowToPlay { // should have used scene builder
         return rootRight;
     }
 
-    public Scene getHowToPlayScene() {
-        return howToPlayScene;
-    }
-
-    public void showHowToPlay(){
+    /**
+     * Displays the HowToPlay scene and updates the game state.
+     */
+    public void showHowToPlay() {
         stage.setScene(howToPlayScene);
         gameWorld.setGameState(GameState.HOW_TO_PLAY);
     }
 }
+
