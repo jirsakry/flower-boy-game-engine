@@ -32,7 +32,7 @@ public class MainMenu {
         playButton.setStyle("-fx-background-color: #ccc803;");
         playButton.setPrefSize(150, 40);
         playButton.setAlignment(Pos.CENTER);
-        playButton.setOnAction(e -> {
+        playButton.setOnMouseClicked(e -> {
             startGame();
         });
 
@@ -40,7 +40,7 @@ public class MainMenu {
         howToPlayButton.setStyle("-fx-background-color: #ccc803;");
         howToPlayButton.setPrefSize(150, 40);
         howToPlayButton.setAlignment(Pos.CENTER);
-        howToPlayButton.setOnAction(e -> {
+        howToPlayButton.setOnMouseClicked(e -> {
             gameWorld.setGameState(GameState.HOW_TO_PLAY);
         });
 
@@ -48,7 +48,7 @@ public class MainMenu {
         exitButton.setStyle("-fx-background-color: #ccc803;");
         exitButton.setPrefSize(150, 40);
         exitButton.setAlignment(Pos.CENTER);
-        exitButton.setOnAction(e -> stage.close());
+        exitButton.setOnMouseClicked(e -> stage.close());
 
         mainMenuRoot.getChildren().addAll(titleText, playButton,howToPlayButton, exitButton);
         mainMenuScene = new Scene(mainMenuRoot, GameWorld.SCREEN_WIDTH, GameWorld.SCREEN_HEIGHT);

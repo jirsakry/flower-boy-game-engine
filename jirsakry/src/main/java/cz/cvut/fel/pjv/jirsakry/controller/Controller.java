@@ -54,17 +54,18 @@ public class Controller {
     }
 
     public void update() {
-//        System.out.println(activeKeys);
         if (activeKeys.contains(KeyCode.LEFT)) {
             gameWorld.moveLeft();
         }
         if (activeKeys.contains(KeyCode.RIGHT)) {
             gameWorld.moveRight();
         }
-        if (activeKeys.contains(KeyCode.DOWN)) {
+        if (activeKeys.contains(KeyCode.DOWN)
+                && DebugOverlay.isShowDebug()) {
             gameWorld.moveDown();
         }
-        if (activeKeys.contains(KeyCode.UP)){
+        if (activeKeys.contains(KeyCode.UP)
+                && DebugOverlay.isShowDebug()) {
             gameWorld.moveUp();
         }
         if (activeKeys.contains(KeyCode.SPACE)) {
@@ -72,7 +73,4 @@ public class Controller {
         }
     }
 
-    public void activeKeysClear() { // TODO: Key can stuck in active buffer
-        activeKeys.clear();
-    }
 }

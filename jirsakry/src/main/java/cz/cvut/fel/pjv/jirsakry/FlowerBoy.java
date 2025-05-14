@@ -31,15 +31,10 @@ public class FlowerBoy extends Application {
 
     // game loop
     private static final long SECOND = 1_000_000_000L;
-    private int fps = 0;
-    private int ups = 0;
-    private int fpsCount = 0;
-    private int upsCount = 0;
     private long lastCheck = 0;
 
     @Override
     public void start(Stage stage){
-
         gameWorld = new GameWorld();
         controller = new Controller(gameWorld);
         gameRenderer = new GameRenderer(gameWorld);
@@ -55,17 +50,15 @@ public class FlowerBoy extends Application {
         MainMenu mainMenu = new MainMenu(gameScene, stage, gameWorld);
         PauseMenu pauseMenu = new PauseMenu(gameRoot, gameWorld, mainMenu);
         HowToPlay howToPlay = new HowToPlay(stage, gameWorld);
-
         WinScreen winScreen = new WinScreen(stage, gameWorld, mainMenu);
-        // TODO: WHY IS WIN SCREEN SWITCHING TO PLAYING ON ITS OWN
 
-        gameScene.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+        stage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             controller.handleKeyPressed(event);
             if(event.getCode() == KeyCode.ESCAPE){
                 pauseMenu.toggle();
             }
         });
-        gameScene.addEventHandler(KeyEvent.KEY_RELEASED, event -> controller.handleKeyReleased(event));
+        stage.addEventHandler(KeyEvent.KEY_RELEASED, event -> controller.handleKeyReleased(event));
 
         mainMenu.showMainMenu();
 
@@ -93,41 +86,15 @@ public class FlowerBoy extends Application {
                         stage.setScene(gameScene);
                     }
                 }
-
-                if (now - lastCheck >= SECOND) {
-                    fps = fpsCount;
-                    ups = upsCount;
-                    fpsCount = 0;
-                    upsCount = 0;
-                    lastCheck = now;
-//                    System.out.println("FPS: " + fps + " | UPS: " + ups);
-//                    Scene currentScene = stage.getScene();
-//                    if(currentScene == gameScene) {
-//                        LOGGER.info("Game Scene");
-//                    }
-//                    else if(currentScene == mainMenu.getMainMenuScene()) {
-//                        LOGGER.info("Main Menu Scene");
-//                    }
-//                    else if(currentScene == howToPlay.getHowToPlayScene()) {
-//                        LOGGER.info("How To Play Scene");
-//                    }
-//                    else if(currentScene == winScreen.getWinScreen()){
-//                        LOGGER.info("Win Scene");
-//                    }
-                }
-                if (now - lastUpdate >= SECOND / 120) { // 120 UPS
+                if (now - lastUpdate >= SECOND / 60) { // 60 UPS and FPS
                     if(gameWorld.getGameState() != GameState.PAUSED) {
                         gameWorld.update();
                         controller.update();
-                        upsCount++;
                         lastUpdate = now;
+                        gameRenderer.render(canvas);
                     }
                 }
-
-                gameRenderer.render(canvas);
-                fpsCount++;
             }
-
         };timer.start();
 
 

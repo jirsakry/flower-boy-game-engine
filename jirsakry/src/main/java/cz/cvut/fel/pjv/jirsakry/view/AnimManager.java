@@ -22,8 +22,8 @@ public class AnimManager {
     private final Image[] jumpDownAnimMirrored;
     private final Image[] deathAnimMirrored;
 
-    private int animSpeed = 13;
-    private int animTick;
+    private int animSpeed = 1;
+    private int animTick = 0;
     private int animFrame = 0;
 
     private int idleLength = 6;
@@ -32,6 +32,11 @@ public class AnimManager {
     private int deathLength = 9;
 
 
+    /**
+     * Instantiates and prepares everything necessary.
+     *
+     * @param images map of images and their names
+     */
     public AnimManager(Map<ImageID, Image> images) {
         idleAnim = new Image[idleLength];
         runAnim = new Image[runLength];

@@ -48,7 +48,7 @@ public class WinScreen {
         backButton.setStyle("-fx-background-color: #ccc803;-fx-padding: 15");
         backButton.setPrefSize(150, 40);
         backButton.setAlignment(Pos.CENTER);
-        backButton.setOnAction(e -> {
+        backButton.setOnMouseClicked(e -> {
             gameWorld.setGameState(GameState.MAIN_MENU);
             gameWorld.newGame();
             gameWorld.setCurrentLevelIndex(0);

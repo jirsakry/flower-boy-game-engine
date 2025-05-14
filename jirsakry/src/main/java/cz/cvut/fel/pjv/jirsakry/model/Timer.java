@@ -18,9 +18,9 @@ public class Timer {
         this.elapsedMillis = 0;
         this.isRunning = false;
 
-        this.timeline = new Timeline(new KeyFrame(Duration.millis(1), e ->{
+        this.timeline = new Timeline(new KeyFrame(Duration.millis(10), e ->{
             if(isRunning){
-                elapsedMillis += 1;
+                elapsedMillis += 10;
             }
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
@@ -29,36 +29,26 @@ public class Timer {
     public void start() {
         isRunning = true;
         timeline.play();
-        if(DebugOverlay.isShowDebug()){
-            LOGGER.info("Timer started");
-        }
+        LOGGER.info("Timer started");
     }
 
     public void stop() {
         isRunning = false;
         timeline.stop();
-        if(DebugOverlay.isShowDebug()){
-            LOGGER.info("Timer stopped");
-        }
+        LOGGER.info("Timer stopped");
     }
 
     public void reset(){
         stop();
         elapsedMillis = 0;
-        if(DebugOverlay.isShowDebug()){
-            LOGGER.info("Timer reset");
-        }
+        LOGGER.info("Timer reset");
     }
 
     public String getFormattedTime() {
         long totalSeconds = elapsedMillis / 1000;
-        long milliseconds = elapsedMillis % 1000;
+        long milliseconds = (elapsedMillis % 1000) / 10;
         long seconds = totalSeconds % 60;
         long minutes = totalSeconds / 60;
         return String.format("%02d:%02d:%02d", minutes, seconds, milliseconds);
-    }
-
-    public boolean isRunning() {
-        return isRunning;
     }
 }
