@@ -12,7 +12,7 @@ public class GameWorld {
     public static int COLS = 20;
     public static int ROWS = 12;
     // timer
-    Timer timer = new Timer();
+    Timer timer;
     private GameState gameState;
     private GameConfig config;
     private List<int[][]> levelMaps;
@@ -23,6 +23,11 @@ public class GameWorld {
     private Level level1;
     private Player player;
     private int playerFlowerCount;
+
+
+    public GameWorld() {
+        timer = new Timer();
+    }
 
     /**
      * Initializes the game world, loads configuration, levels and creates the player.
@@ -40,9 +45,8 @@ public class GameWorld {
         currentLevelIndex = 0;
 
         player = new Player(40, 600, 64, 64,
-                config.getPlayerSpeed(), config.getPlayerMaxHealth(), 1,
+                config.getPlayerSpeed(), config.getPlayerMaxHealth(), config.getPlayerMaxHealth(),
                 config.getPlayerJumpStrength(), config.getGravity(), currentLevel);
-
         newGame();
     }
 
@@ -53,10 +57,7 @@ public class GameWorld {
         LOGGER.info(player.getPlayerInfo());
         LOGGER.info("currentLevelIndex: " + currentLevelIndex);
 
-        player = new Player(40, 600, 64, 64,
-                config.getPlayerSpeed(), config.getPlayerMaxHealth(), config.getPlayerMaxHealth(),
-                config.getPlayerJumpStrength(), config.getGravity(), currentLevel);
-        player.reset();
+        player.reset(currentLevel);
         LOGGER.info(player.getPlayerInfo());
 
         resetItems();
@@ -177,6 +178,10 @@ public class GameWorld {
         return currentLevel;
     }
 
+    public void setCurrentLevel(Level currentLevel) {
+        this.currentLevel = currentLevel;
+    }
+
     public int getCurrentLevelIndex() {
         return currentLevelIndex;
     }
@@ -189,6 +194,10 @@ public class GameWorld {
         return levels;
     }
 
+    public void setLevels(List<Level> levels) {
+        this.levels = levels;
+    }
+
     public GameState getGameState() {
         return gameState;
     }
@@ -199,5 +208,13 @@ public class GameWorld {
 
     public Timer getTimer() {
         return timer;
+    }
+
+    public void setTimer(Timer timer) {
+        this.timer = timer;
+    }
+
+    public int getPlayerFlowerCount() {
+        return playerFlowerCount;
     }
 }

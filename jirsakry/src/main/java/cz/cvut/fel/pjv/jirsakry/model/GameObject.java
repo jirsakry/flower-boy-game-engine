@@ -28,32 +28,16 @@ abstract class GameObject {
         return x;
     }
 
+    public void setX(double x) {
+        this.x = x;
+    }
+
     public double getY() {
         return y;
     }
 
-    public double getWidth() {
-        return width;
-    }
-
-    public double getHeight() {
-        return height;
-    }
-
-    public BoundingBox getTopEdge() {
-        return new BoundingBox(x, y, width, 1);
-    }
-
-    public BoundingBox getBottomEdge() {
-        return new BoundingBox(x, y + height - 1, width, 1);
-    }
-
-    public BoundingBox getLeftEdge() {
-        return new BoundingBox(x, y, 1, height);
-    }
-
-    public BoundingBox getRightEdge() {
-        return new BoundingBox(x + width - 1, y, 1, height);
+    public void setY(double y) {
+        this.y = y;
     }
 
     public void update(){

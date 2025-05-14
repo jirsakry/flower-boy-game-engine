@@ -8,7 +8,7 @@ public class Player extends GameObject {
     private final int maxHealth;
     private final double jumpStrength;
     private final double gravity;
-    private final Level currentLevel;
+    private Level currentLevel;
     private PlayerState playerState = PlayerState.FACING_RIGHT;
     private final double speed;
     private int currentHealth;
@@ -38,7 +38,6 @@ public class Player extends GameObject {
     public void update() {
         moving = velocityX != 0; // is moving
         checkPlayerState();
-
         if (!inAir) {
             if (!(IsEntityOnFloor(getHitBox(), currentLevel.getLevelData()))) {
                 inAir = true;
@@ -98,7 +97,7 @@ public class Player extends GameObject {
     /**
      * Resets player position, velocity, and stats
      */
-    public void reset() {
+    public void reset(Level level) {
         playerState = PlayerState.FACING_RIGHT;
         x = 40;
         y = 600;
@@ -106,6 +105,7 @@ public class Player extends GameObject {
         velocityY = 0;
         holdingShield = false;
         currentHealth = 1;
+        currentLevel = level;
     }
 
     public void moveRight() {
@@ -187,6 +187,10 @@ public class Player extends GameObject {
 
     public int getMaxHealth() {
         return maxHealth;
+    }
+
+    public void setCurrentLevel(Level currentLevel) {
+        this.currentLevel = currentLevel;
     }
 
     public String getPlayerInfo() {
