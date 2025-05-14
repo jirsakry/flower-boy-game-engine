@@ -60,13 +60,29 @@ public class GameRenderer {
             }
         }
 
-        for (Cactus cactus : gameWorld.getCurrentLevel().getCacti()) {
-            gc.drawImage(images.get(ImageID.CACTUS), cactus.getX(), cactus.getY());
+        for (Cactus cactus : gameWorld.getCurrentLevel().getCacti()) { // cacti
+            if(!(cactus.isDestroyed())){
+                gc.drawImage(images.get(ImageID.CACTUS), cactus.getX(), cactus.getY());
+            }
+            else {
+                gc.drawImage(images.get(ImageID.CACTUS_DESTROYED), cactus.getX(), cactus.getY());
+            }
+
+        }
+
+        for (Shield shield : gameWorld.getCurrentLevel().getShields()) { // shields
+            if(!(shield.isCollected())) {
+                gc.drawImage(images.get(ImageID.SHIELD), shield.getX(), shield.getY());
+            }
         }
     }
 
     private void renderCharacter() {
         boolean facingRight = gameWorld.getPlayer().getPlayerState() == PlayerState.FACING_RIGHT;
+
+        if(gameWorld.getPlayer().isHoldingShield()){
+           gc.drawImage(images.get(ImageID.SHIELD), gameWorld.getPlayer().getX() - 3, gameWorld.getPlayer().getY() - 2);
+        }
 
         int invertedImageOffset;
         if (facingRight) { // centering the inverted animations
@@ -75,55 +91,71 @@ public class GameRenderer {
             invertedImageOffset = 4;
         }
 
-        if (gameWorld.getPlayer().getPlayerState() == PlayerState.DEATH) { // death
+        if (gameWorld.getPlayer().getPlayerState() == PlayerState.DEATH) { // death // TODO: TEAR APART
             animManager.updateAnimationTick(animManager.getDeathLength());
-            gc.drawImage(
-                    facingRight ? animManager.getDeathAnim()[animManager.getAnimFrame()]
-                            : animManager.getDeathAnimMirrored()[animManager.getAnimFrame()],
-                    gameWorld.getPlayer().getX() - invertedImageOffset, gameWorld.getPlayer().getY()
-            );
-            if (animManager.getAnimFrame() == animManager.getDeathAnim().length - 1) {
-                gameWorld.newGame();
-            }
+            renderCharacterDeath(facingRight, invertedImageOffset);
         } else if (gameWorld.getPlayer().isInAir()) { // jumping
             animManager.updateAnimationTick(animManager.getJumpLength());
-            if (gameWorld.getPlayer().getVelocityY() < 1) { // jumping up
-                if (animManager.getAnimFrame() < animManager.getJumpUpAnim().length) {
-                    gc.drawImage(
-                            facingRight ? animManager.getJumpUpAnim()[animManager.getAnimFrame()]
-                                    : animManager.getJumpUpAnimMirrored()[animManager.getAnimFrame()],
-                            gameWorld.getPlayer().getX() - invertedImageOffset, gameWorld.getPlayer().getY()
-                    );
-                }
-            } else { // falling
-                if (animManager.getAnimFrame() < animManager.getJumpDownAnim().length) {
-                    gc.drawImage(
-                            facingRight ? animManager.getJumpDownAnim()[animManager.getAnimFrame()]
-                                    : animManager.getJumpDownAnimMirrored()[animManager.getAnimFrame()],
-                            gameWorld.getPlayer().getX() - invertedImageOffset, gameWorld.getPlayer().getY()
-                    );
-                }
-            }
+            renderCharacterJump(facingRight, invertedImageOffset);
         } else {
             if (gameWorld.getPlayer().isMoving()) { // running
                 animManager.updateAnimationTick(animManager.getRunLength());
-                if (animManager.getAnimFrame() < animManager.getRunAnim().length) {
-                    gc.drawImage(
-                            facingRight ? animManager.getRunAnim()[animManager.getAnimFrame()]
-                                    : animManager.getRunAnimMirrored()[animManager.getAnimFrame()],
-                            gameWorld.getPlayer().getX() - invertedImageOffset, gameWorld.getPlayer().getY()
-                    );
-                }
+                renderCharacterRun(facingRight, invertedImageOffset);
             } else { // idle
                 animManager.updateAnimationTick(animManager.getIdleLength());
-                if (animManager.getAnimFrame() < animManager.getIdleAnim().length) {
-                    gc.drawImage(
-                            facingRight ? animManager.getIdleAnim()[animManager.getAnimFrame()]
-                                    : animManager.getIdleAnimMirrored()[animManager.getAnimFrame()],
-                            gameWorld.getPlayer().getX() - invertedImageOffset, gameWorld.getPlayer().getY()
-                    );
-                }
+                renderCharacterIdle(facingRight, invertedImageOffset);
             }
+        }
+    }
+
+    private void renderCharacterIdle(boolean facingRight, int invertedImageOffset) {
+        if (animManager.getAnimFrame() < animManager.getIdleAnim().length) {
+            gc.drawImage(
+                    facingRight ? animManager.getIdleAnim()[animManager.getAnimFrame()]
+                            : animManager.getIdleAnimMirrored()[animManager.getAnimFrame()],
+                    gameWorld.getPlayer().getX() - invertedImageOffset, gameWorld.getPlayer().getY()
+            );
+        }
+    }
+
+    private void renderCharacterRun(boolean facingRight, int invertedImageOffset) {
+        if (animManager.getAnimFrame() < animManager.getRunAnim().length) {
+            gc.drawImage(
+                    facingRight ? animManager.getRunAnim()[animManager.getAnimFrame()]
+                            : animManager.getRunAnimMirrored()[animManager.getAnimFrame()],
+                    gameWorld.getPlayer().getX() - invertedImageOffset, gameWorld.getPlayer().getY()
+            );
+        }
+    }
+
+    private void renderCharacterJump(boolean facingRight, int invertedImageOffset) {
+        if (gameWorld.getPlayer().getVelocityY() < 1) { // jumping up
+            if (animManager.getAnimFrame() < animManager.getJumpUpAnim().length) {
+                gc.drawImage(
+                        facingRight ? animManager.getJumpUpAnim()[animManager.getAnimFrame()]
+                                : animManager.getJumpUpAnimMirrored()[animManager.getAnimFrame()],
+                        gameWorld.getPlayer().getX() - invertedImageOffset, gameWorld.getPlayer().getY()
+                );
+            }
+        } else { // falling
+            if (animManager.getAnimFrame() < animManager.getJumpDownAnim().length) {
+                gc.drawImage(
+                        facingRight ? animManager.getJumpDownAnim()[animManager.getAnimFrame()]
+                                : animManager.getJumpDownAnimMirrored()[animManager.getAnimFrame()],
+                        gameWorld.getPlayer().getX() - invertedImageOffset, gameWorld.getPlayer().getY()
+                );
+            }
+        }
+    }
+
+    private void renderCharacterDeath(boolean facingRight, int invertedImageOffset) {
+        gc.drawImage(
+                facingRight ? animManager.getDeathAnim()[animManager.getAnimFrame()]
+                        : animManager.getDeathAnimMirrored()[animManager.getAnimFrame()],
+                gameWorld.getPlayer().getX() - invertedImageOffset, gameWorld.getPlayer().getY()
+        );
+        if (animManager.getAnimFrame() == animManager.getDeathAnim().length - 1) {
+            gameWorld.newGame();
         }
     }
 

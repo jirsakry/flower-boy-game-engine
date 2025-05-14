@@ -11,18 +11,17 @@ public class Player extends GameObject {
     private int currentHealth;
     private boolean moving = false;
 
+    private boolean holdingShield = false;
+
     //jump and gravity
-    private boolean jump = false;
     private boolean doubleJumpReady = true;
     private boolean inAir = false;
     private final double jumpStrength;
     private final double gravity;
     private double velocityX = 0;
     private double velocityY = 0;
-    private double maxJumpHeight = 30;
 
     private final Level currentLevel;
-
 
     public Player(double x, double y, double width, double height, double speed, int maxHealth, int  currentHealth,
                   double jumpStrength, double gravity, Level currentLevel) {
@@ -37,19 +36,17 @@ public class Player extends GameObject {
 
     @Override
     public void update(){
-        moving = velocityX != 0; // is moving?
+        moving = velocityX != 0; // is moving
         checkPlayerState();
 
         if(!inAir){
             if(!(IsEntityOnFloor(getHitBox(), currentLevel.getLevelData()))){
                 inAir = true;
-                jump = false;
             }
         }
 
         if(inAir){
             if(CanMoveHere(getHitBox().getMinX(), getHitBox().getMinY() + velocityY, this, currentLevel.getLevelData())){
-                jump = false;
                 y += velocityY;
                 velocityY += gravity;
                 updateHorizontalMove();
@@ -72,6 +69,9 @@ public class Player extends GameObject {
     }
 
     private void checkPlayerState() {
+        if(currentHealth == 0){
+            playerState = PlayerState.DEATH;
+        }
         if(playerState == PlayerState.DEATH){
             velocityX = 0;
             velocityY = 0;
@@ -88,7 +88,6 @@ public class Player extends GameObject {
     private void resetInAir(){
         inAir = false;
         velocityY = 0;
-        jump = false;
         doubleJumpReady = true;
     }
 
@@ -99,7 +98,6 @@ public class Player extends GameObject {
         else {
             hitBox = new BoundingBox (GetXPosNextToWall(hitBox, velocityX), y, width, height);
             moving = false;
-//            x = GetXPosNextToWall(hitBox, velocityX);
         }
     }
 
@@ -109,6 +107,8 @@ public class Player extends GameObject {
         y = 600;
         velocityX = 0;
         velocityY = 0;
+        holdingShield = false;
+        currentHealth = 1;
     }
 
     public void moveRight(){
@@ -126,14 +126,12 @@ public class Player extends GameObject {
     }
 
     public void jump(){
-        //TODO: non-static jump height
         if(!inAir) {
             inAir = true;
-            jump = true;
             doubleJumpReady = true;
             velocityY = jumpStrength;
         }
-        else if(doubleJumpReady && !jump) {
+        else if(doubleJumpReady) {
             velocityY = jumpStrength;
             doubleJumpReady = false;
         }
@@ -165,10 +163,6 @@ public class Player extends GameObject {
         return doubleJumpReady;
     }
 
-    public boolean isJump() {
-        return jump;
-    }
-
     public PlayerState getPlayerState() {
         return playerState;
     }
@@ -176,6 +170,27 @@ public class Player extends GameObject {
     public void setPlayerState(PlayerState playerState) {
         this.playerState = playerState;
     }
+
+    public boolean isHoldingShield() {
+        return holdingShield;
+    }
+
+    public void setHoldingShield(boolean holdingShield) {
+        this.holdingShield = holdingShield;
+    }
+
+    public int getCurrentHealth() {
+        return currentHealth;
+    }
+
+    public void setCurrentHealth(int currentHealth) {
+        this.currentHealth = currentHealth;
+    }
+
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
     public String getPlayerInfo() {
             return "Player[x=" + x +
                     ", y=" + y +
@@ -185,7 +200,6 @@ public class Player extends GameObject {
                     ", state=" + playerState +
                     ", inAir=" + inAir +
                     ", doubleJumpReady=" + doubleJumpReady +
-                    ", jump=" + jump +
                     "]";
         }
 }

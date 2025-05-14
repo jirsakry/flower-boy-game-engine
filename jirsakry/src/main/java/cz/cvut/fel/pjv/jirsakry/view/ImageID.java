@@ -11,7 +11,9 @@ public enum ImageID {
     CHARACTER_DEATH("death.png"),
     FLOWER("flower_pot.png"),
     CACTUS("cactus.png"),
-    GRASS("grass_block.png"),;
+    CACTUS_DESTROYED("cactus_destroyed.png"),
+    GRASS("grass_block.png"),
+    SHIELD("shield.png"),;
 
 
     private final String fileName;

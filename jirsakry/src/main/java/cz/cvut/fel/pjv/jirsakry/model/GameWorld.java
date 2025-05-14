@@ -47,27 +47,26 @@ public class GameWorld{
         currentLevelIndex = 0;
 
         player = new Player(40, 600, 64, 64,
-                config.getPlayerSpeed(), config.getPlayerMaxHealth(), config.getPlayerMaxHealth(),
+                config.getPlayerSpeed(), config.getPlayerMaxHealth(), 1,
                 config.getPlayerJumpStrength(), config.getGravity(), currentLevel);
 
         newGame();
     }
 
+    /**
+     * Gets the model ready for game.
+     */
     public void newGame() {
         LOGGER.info(player.getPlayerInfo());
         LOGGER.info("currentLevelIndex: " + currentLevelIndex);
 
-        player = new Player(40, 600, 64, 64, // TODO: Maybe more elegant way?
+        player = new Player(40, 600, 64, 64,
                 config.getPlayerSpeed(), config.getPlayerMaxHealth(), config.getPlayerMaxHealth(),
                 config.getPlayerJumpStrength(), config.getGravity(), currentLevel);
         player.reset();
         LOGGER.info(player.getPlayerInfo());
 
-        playerFlowerCount = 0;
-        for(Flower flower: currentLevel.getFlowers()){
-            flower.setCollected(false);
-        }
-
+        resetItems();
         timer.reset();
 
         if(gameState == GameState.MAIN_MENU){
@@ -76,6 +75,19 @@ public class GameWorld{
         else{
             gameState = GameState.PLAYING;
             timer.start();
+        }
+    }
+
+    private void resetItems() {
+        playerFlowerCount = 0;
+        for(Flower flower: currentLevel.getFlowers()){
+            flower.setCollected(false);
+        }
+        for(Shield shield: currentLevel.getShields()){
+            shield.setCollected(false);
+        }
+        for(Cactus cactus : currentLevel.getCacti()){
+            cactus.setDestroyed(false);
         }
     }
 
@@ -101,6 +113,17 @@ public class GameWorld{
     private void checkCollisions(){
         checkFlowerPickUp();
         checkCactusHit();
+        checkShieldCollect();
+    }
+
+    private void checkShieldCollect() {
+        for (Shield shield:  currentLevel.getShields()) {
+            if(shield.getHitBox().intersects(player.getHitBox()) &&
+                    !(player.isHoldingShield())){
+                player.setHoldingShield(true);
+                shield.setCollected(true);
+            }
+        }
     }
 
     private void checkFlowerPickUp() {
@@ -116,9 +139,15 @@ public class GameWorld{
 
     private void checkCactusHit() {
         for (Cactus cactus : currentLevel.getCacti()){
-            if(cactus.getHitBox().intersects(player.getHitBox())) {
-                player.setPlayerState(PlayerState.DEATH);
-
+            if(cactus.getHitBox().intersects(player.getHitBox()) &&
+                    !(cactus.isDestroyed())) {
+                if(player.isHoldingShield()){
+                    player.setHoldingShield(false);
+                    cactus.setDestroyed(true);
+                }
+                else if(!(cactus.isDestroyed())){
+                    player.setCurrentHealth(player.getCurrentHealth() - 1);
+                }
             }
         }
     }
@@ -142,10 +171,6 @@ public class GameWorld{
 
     public Player getPlayer() {
         return player;
-    }
-
-    public int getPlayerFlowerCount() {
-        return playerFlowerCount;
     }
 
     public Level getCurrentLevel() {

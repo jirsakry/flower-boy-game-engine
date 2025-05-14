@@ -8,6 +8,7 @@ public class Level {
     private final ArrayList<Platform> platforms;
     private final ArrayList<Flower> flowers;
     private final ArrayList<Cactus> cacti;
+    private final ArrayList<Shield> shields;
 
     private final int TILE_SIZE = GameWorld.TILE_SIZE;
     private final int COLS = GameWorld.COLS;
@@ -21,6 +22,7 @@ public class Level {
         this.platforms = new ArrayList<>();
         this.flowers = new ArrayList<>();
         this.cacti = new ArrayList<>();
+        this.shields = new ArrayList<>();
         load(levelData);
     }
 
@@ -59,6 +61,12 @@ public class Level {
                                 col * TILE_SIZE + TILE_SIZE/2, (row * TILE_SIZE) + TILE_SIZE / 2,
                                 (double) TILE_SIZE / 2, (double) TILE_SIZE / 2));
                     }
+                    case TileValues.SHIELD -> {
+                        shields.add(new Shield(
+                                col * TILE_SIZE, row *  TILE_SIZE,
+                                TILE_SIZE/2, TILE_SIZE/2
+                        ));
+                    }
                 }
 
             }
@@ -75,6 +83,10 @@ public class Level {
 
     public ArrayList<Cactus> getCacti() {
         return cacti;
+    }
+
+    public ArrayList<Shield> getShields() {
+        return shields;
     }
 
     public int[][] getLevelData() {
