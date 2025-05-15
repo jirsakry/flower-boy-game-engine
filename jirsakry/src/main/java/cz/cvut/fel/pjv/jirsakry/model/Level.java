@@ -32,14 +32,14 @@ public class Level {
     }
 
     private void load(int[][] levelData) {
-        for (int row = 0; row < ROWS; row++){
-            for(int col = 0; col < COLS; col++){
+        for (int row = 0; row < ROWS; row++) {
+            for (int col = 0; col < COLS; col++) {
                 int tileValue = levelData[row][col];
                 switch (tileValue) {
-                    case TileValues.GRASS ->{
-                            platforms.add(new Platform(
-                                    col * TILE_SIZE, row * TILE_SIZE,
-                                    TILE_SIZE, TILE_SIZE));
+                    case TileValues.GRASS -> {
+                        platforms.add(new Platform(
+                                col * TILE_SIZE, row * TILE_SIZE,
+                                TILE_SIZE, TILE_SIZE));
                     }
                     case TileValues.GROUND -> {
                         continue;
@@ -54,22 +54,22 @@ public class Level {
                     }
                     case TileValues.CACTUS -> {
                         cacti.add(new Cactus(
-                            col * TILE_SIZE, (row * TILE_SIZE) + TILE_SIZE / 2,
-                            (double) TILE_SIZE / 2, (double) TILE_SIZE / 2
-                    ));
+                                col * TILE_SIZE, (row * TILE_SIZE) + TILE_SIZE / 2,
+                                (double) TILE_SIZE / 2, (double) TILE_SIZE / 2
+                        ));
                     }
                     case TileValues.DOUBLE_CACTUS -> {
                         cacti.add(new Cactus(
                                 col * TILE_SIZE, (row * TILE_SIZE) + TILE_SIZE / 2,
                                 (double) TILE_SIZE / 2, (double) TILE_SIZE / 2));
                         cacti.add(new Cactus(
-                                col * TILE_SIZE + TILE_SIZE/2, (row * TILE_SIZE) + TILE_SIZE / 2,
+                                col * TILE_SIZE + TILE_SIZE / 2, (row * TILE_SIZE) + TILE_SIZE / 2,
                                 (double) TILE_SIZE / 2, (double) TILE_SIZE / 2));
                     }
                     case TileValues.SHIELD -> {
                         shields.add(new Shield(
-                                col * TILE_SIZE, row *  TILE_SIZE,
-                                TILE_SIZE/2, TILE_SIZE/2
+                                col * TILE_SIZE, row * TILE_SIZE,
+                                TILE_SIZE / 2, TILE_SIZE / 2
                         ));
                     }
                 }

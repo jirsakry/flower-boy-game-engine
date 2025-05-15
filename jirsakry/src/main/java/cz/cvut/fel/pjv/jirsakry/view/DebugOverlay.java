@@ -86,7 +86,7 @@ public class DebugOverlay { // generated and edited
             gc.strokeRect(cactus.getHitBox().getMinX(), cactus.getHitBox().getMinY(),
                     cactus.getHitBox().getWidth(), cactus.getHitBox().getHeight());
         }
-        for (Shield shield : gameWorld.getCurrentLevel().getShields()){
+        for (Shield shield : gameWorld.getCurrentLevel().getShields()) {
             gc.strokeRect(shield.getHitBox().getMinX(), shield.getHitBox().getMinY(),
                     shield.getHitBox().getWidth(), shield.getHitBox().getHeight());
         }

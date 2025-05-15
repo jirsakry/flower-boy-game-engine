@@ -18,7 +18,7 @@ public class PauseMenu {
     /**
      * Creates the PauseMenu overlay for pausing and resuming the game.
      *
-     * @param gameRoot The root StackPane of the game scene.
+     * @param gameRoot  The root StackPane of the game scene.
      * @param gameWorld The game world instance to manage game state.
      */
     public PauseMenu(StackPane gameRoot, GameWorld gameWorld) {

@@ -17,8 +17,8 @@ import java.util.Map;
 public class GameRenderer {
     private final AnimManager animManager;
     private final GameWorld gameWorld;
-    private GraphicsContext gc;
     private final Map<ImageID, Image> images;
+    private GraphicsContext gc;
     private double backgroundWidth;
     private double backgroundHeight;
 

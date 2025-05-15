@@ -13,7 +13,8 @@ public enum ImageID {
     CACTUS("cactus.png"),
     CACTUS_DESTROYED("cactus_destroyed.png"),
     GRASS("grass_block.png"),
-    SHIELD("shield.png"),;
+    SHIELD("shield.png"),
+    ;
 
 
     private final String fileName;
@@ -33,12 +34,12 @@ public enum ImageID {
         return width;
     }
 
-    public double getHeight() {
-        return height;
-    }
-
     public void setWidth(double width) {
         this.width = width;
+    }
+
+    public double getHeight() {
+        return height;
     }
 
     public void setHeight(double height) {

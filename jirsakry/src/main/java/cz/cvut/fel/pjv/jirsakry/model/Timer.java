@@ -7,23 +7,23 @@ import javafx.util.Duration;
 import java.util.logging.Logger;
 
 public class Timer {
-    private long elapsedMillis;
-    private final Timeline timeline;
-    private boolean isRunning;
-
     private static final Logger LOGGER = Logger.getLogger(Timer.class.getName());
+    private final Timeline timeline;
+    private long elapsedMillis;
+    private boolean isRunning;
 
     public Timer() {
         this.elapsedMillis = 0;
         this.isRunning = false;
 
-        this.timeline = new Timeline(new KeyFrame(Duration.millis(10), e ->{
-            if(isRunning){
+        this.timeline = new Timeline(new KeyFrame(Duration.millis(10), e -> {
+            if (isRunning) {
                 elapsedMillis += 10;
             }
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
     }
+
     /**
      * Starts the timer and begins measuring elapsed time.
      */
@@ -32,6 +32,7 @@ public class Timer {
         timeline.play();
         LOGGER.info("Timer started");
     }
+
     /**
      * Stops the timer and pauses time measurement.
      */
@@ -40,10 +41,11 @@ public class Timer {
         timeline.stop();
         LOGGER.info("Timer stopped");
     }
+
     /**
      * Stops the timer and resets the elapsed time to zero.
      */
-    public void reset(){
+    public void reset() {
         stop();
         elapsedMillis = 0;
         LOGGER.info("Timer reset");

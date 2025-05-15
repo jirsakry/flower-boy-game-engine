@@ -2,7 +2,7 @@ package cz.cvut.fel.pjv.jirsakry.model;
 
 import javafx.geometry.BoundingBox;
 
-public class Cactus extends  GameObject {
+public class Cactus extends GameObject {
     private boolean destroyed = false;
 
     public Cactus(double x, double y, double width, double height) {

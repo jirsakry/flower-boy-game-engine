@@ -21,14 +21,14 @@ public class ConfigManager {
      *
      * @param config the game configuration to save
      */
-    public static void saveConfig(GameConfig config){
+    public static void saveConfig(GameConfig config) {
         try {
             mapper.enable(SerializationFeature.INDENT_OUTPUT);
             mapper.enable(SerializationFeature.WRITE_SINGLE_ELEM_ARRAYS_UNWRAPPED);
             mapper.writerWithDefaultPrettyPrinter()
                     .writeValue(new File(CONFIG_FILE), config);
         } catch (IOException e) {
-            LOGGER.warning("Error saving config: "  + e.getMessage());
+            LOGGER.warning("Error saving config: " + e.getMessage());
         }
     }
 
@@ -38,9 +38,9 @@ public class ConfigManager {
      *
      * @return loaded or default game configuration
      */
-    public static GameConfig loadConfig(){
+    public static GameConfig loadConfig() {
         File file = new File(CONFIG_FILE);
-        if(!file.exists()){
+        if (!file.exists()) {
             GameConfig defaultConfig = GameConfig.getDefaultConfig();
             saveConfig(defaultConfig);
             return defaultConfig;
@@ -48,7 +48,7 @@ public class ConfigManager {
         try {
             return mapper.readValue(file, GameConfig.class);
         } catch (IOException e) {
-            LOGGER.warning("Error loading config: "  + e.getMessage());
+            LOGGER.warning("Error loading config: " + e.getMessage());
             return GameConfig.getDefaultConfig();
         }
     }

@@ -2,7 +2,6 @@ package cz.cvut.fel.pjv.jirsakry.scenes;
 
 import cz.cvut.fel.pjv.jirsakry.model.GameState;
 import cz.cvut.fel.pjv.jirsakry.model.GameWorld;
-
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -42,7 +41,7 @@ public class WinScreen {
         winMessage.setFill(Color.DARKGREEN);
 
         timeMessage = new Text();
-        timeMessage.setFont(new Font("Constantia",35));
+        timeMessage.setFont(new Font("Constantia", 35));
         timeMessage.setFill(Color.DARKGREEN);
 
         nextLevelButton = new Button("NEXT LEVEL");
@@ -73,7 +72,7 @@ public class WinScreen {
 
         root.setSpacing(20);
         root.setAlignment(Pos.CENTER);
-        root.getChildren().addAll(winMessage, timeMessage, nextLevelButton,backButton, goodByeButton);
+        root.getChildren().addAll(winMessage, timeMessage, nextLevelButton, backButton, goodByeButton);
 
         winScreen = new Scene(root, GameWorld.SCREEN_WIDTH, GameWorld.SCREEN_HEIGHT);
     }
@@ -91,8 +90,8 @@ public class WinScreen {
      * Updates the "Next Level" button state and text depending on whether
      * there are more levels available.
      */
-    public void updateNextLevelButton(){
-        if(gameWorld.getCurrentLevelIndex() > gameWorld.getLevels().size() - 1){
+    public void updateNextLevelButton() {
+        if (gameWorld.getCurrentLevelIndex() > gameWorld.getLevels().size() - 1) {
             nextLevelButton.setDisable(true);
             nextLevelButton.setText("NO MORE LEVELS :(");
         }

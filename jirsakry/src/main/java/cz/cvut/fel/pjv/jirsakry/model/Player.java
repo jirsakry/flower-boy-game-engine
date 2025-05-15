@@ -8,9 +8,9 @@ public class Player extends GameObject {
     private final int maxHealth;
     private final double jumpStrength;
     private final double gravity;
+    private final double speed;
     private Level currentLevel;
     private PlayerState playerState = PlayerState.FACING_RIGHT;
-    private final double speed;
     private int currentHealth;
     private boolean moving = false;
     private boolean holdingShield = false;

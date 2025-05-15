@@ -1,7 +1,6 @@
 package cz.cvut.fel.pjv.jirsakry.model;
 
 import javafx.geometry.BoundingBox;
-import javafx.scene.shape.Rectangle;
 
 abstract class GameObject {
     protected double x;
@@ -9,7 +8,7 @@ abstract class GameObject {
 
     protected double width;
     protected double height;
-    
+
     protected BoundingBox hitBox;
 
     public GameObject(double x, double y, double width, double height) {
@@ -40,7 +39,7 @@ abstract class GameObject {
         this.y = y;
     }
 
-    public void update(){
+    public void update() {
     }
 
 }

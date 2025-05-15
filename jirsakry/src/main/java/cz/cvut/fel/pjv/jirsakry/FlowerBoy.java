@@ -22,19 +22,19 @@ import java.util.logging.Logger;
 
 
 public class FlowerBoy extends Application {
+    private static final Logger LOGGER = Logger.getLogger(FlowerBoy.class.getName());
+    // game loop
+    private static final long SECOND = 1_000_000_000L;
     private GameWorld gameWorld;
     private Controller controller;
     private GameRenderer gameRenderer;
 
-    private static final Logger LOGGER = Logger.getLogger(FlowerBoy.class.getName());
-
-
-    // game loop
-    private static final long SECOND = 1_000_000_000L;
-    private long lastCheck = 0;
+    public static void main(String[] args) {
+        launch();
+    }
 
     @Override
-    public void start(Stage stage){
+    public void start(Stage stage) {
         gameWorld = new GameWorld();
         controller = new Controller(gameWorld);
         gameRenderer = new GameRenderer(gameWorld);
@@ -54,7 +54,7 @@ public class FlowerBoy extends Application {
 
         stage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             controller.handleKeyPressed(event);
-            if(event.getCode() == KeyCode.ESCAPE){
+            if (event.getCode() == KeyCode.ESCAPE) {
                 pauseMenu.toggle();
             }
         });
@@ -68,9 +68,9 @@ public class FlowerBoy extends Application {
         stage.requestFocus();
         stage.show();
 
-        lastCheck = System.nanoTime();
-        AnimationTimer timer = new AnimationTimer() { // generated game loop
+        AnimationTimer timer = new AnimationTimer() {
             private long lastUpdate = 0;
+
             @Override
             public void handle(long now) {
                 switch (gameWorld.getGameState()) {
@@ -87,7 +87,7 @@ public class FlowerBoy extends Application {
                     }
                 }
                 if (now - lastUpdate >= SECOND / 60) { // 60 UPS and FPS
-                    if(gameWorld.getGameState() != GameState.PAUSED) {
+                    if (gameWorld.getGameState() != GameState.PAUSED) {
                         gameWorld.update();
                         controller.update();
                         lastUpdate = now;
@@ -95,12 +95,9 @@ public class FlowerBoy extends Application {
                     }
                 }
             }
-        };timer.start();
+        };
+        timer.start();
 
 
-    }
-
-    public static void main(String[] args) {
-        launch();
     }
 }

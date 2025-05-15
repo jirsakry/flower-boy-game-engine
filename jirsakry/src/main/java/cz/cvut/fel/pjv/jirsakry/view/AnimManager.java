@@ -22,13 +22,13 @@ public class AnimManager {
     private final Image[] jumpDownAnimMirrored;
     private final Image[] deathAnimMirrored;
 
-    private int animSpeed = 1;
+    private final int animSpeed = 1;
     private int animTick = 0;
     private int animFrame = 0;
 
     private int idleLength = 6;
     private int runLength = 9;
-    private int jumpLength = 1;
+    private final int jumpLength = 1;
     private int deathLength = 9;
 
 
@@ -53,30 +53,30 @@ public class AnimManager {
         this.images = images;
     }
 
-    public void updateAnimationTick(int animationLength){ // based on a tutorial
+    public void updateAnimationTick(int animationLength) { // based on a tutorial
         animTick++;
-        if(animTick >= animSpeed){
+        if (animTick >= animSpeed) {
             animTick = 0;
             animFrame++;
-            if(animFrame >= animationLength){
+            if (animFrame >= animationLength) {
                 animFrame = 0;
             }
         }
     }
 
     public void loadAnimations() {
-     loadIdleAnim();
-     mirrorAnimation(idleAnim, idleAnimMirrored);
+        loadIdleAnim();
+        mirrorAnimation(idleAnim, idleAnimMirrored);
 
-     loadRunAnim();
-     mirrorAnimation(runAnim, runAnimMirrored);
+        loadRunAnim();
+        mirrorAnimation(runAnim, runAnimMirrored);
 
-     loadJumpAnim();
-     mirrorAnimation(jumpUpAnim, jumpUpAnimMirrored);
-     mirrorAnimation(jumpDownAnim, jumpDownAnimMirrored);
+        loadJumpAnim();
+        mirrorAnimation(jumpUpAnim, jumpUpAnimMirrored);
+        mirrorAnimation(jumpDownAnim, jumpDownAnimMirrored);
 
-     loadDeathAnim();
-     mirrorAnimation(deathAnim, deathAnimMirrored);
+        loadDeathAnim();
+        mirrorAnimation(deathAnim, deathAnimMirrored);
     }
 
 
@@ -116,7 +116,7 @@ public class AnimManager {
         }
     }
 
-    private void loadJumpAnim(){
+    private void loadJumpAnim() {
         jumpDownAnim[0] = images.get(ImageID.CHARACTER_JUMP_DOWN);
         jumpUpAnim[0] = images.get(ImageID.CHARACTER_JUMP_UP);
     }

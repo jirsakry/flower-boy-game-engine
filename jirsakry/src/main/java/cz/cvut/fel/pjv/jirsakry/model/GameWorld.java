@@ -116,7 +116,7 @@ public class GameWorld {
         for (Shield shield : currentLevel.getShields()) {
             if (shield.getHitBox().intersects(player.getHitBox()) &&
                     !(player.isHoldingShield())) {
-                if(!(shield.isCollected())) {
+                if (!(shield.isCollected())) {
                     player.setHoldingShield(true);
                     shield.setCollected(true);
                 }
