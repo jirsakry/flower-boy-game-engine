@@ -82,6 +82,7 @@ class GameWorldTest {
         assertTrue(shield.isCollected());
         gameWorld.update();
         assertTrue(gameWorld.getPlayer().isHoldingShield(), "Should hold only one shield");
+        assertTrue(shield.isCollected());
     }
 
 
